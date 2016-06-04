@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: hsl(0,0%,90%);
+  font-size: 16px;
+}
+
+.main {
+  background: hsl(0,0%,99%);
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  height: 100%;
+  padding: 2rem;
+}
+
+.label {
+  composes: label from './common.css';
+  padding: 1rem 0 0;
+}
+
+.add {
+  composes: link from './common.css';
+  margin-left: 1rem; 
+}

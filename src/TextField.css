@@ -1,0 +1,13 @@
+
+.container {
+	padding: 1rem 0;
+}
+
+.label {
+	composes: label from './common.css';
+}
+
+.field {
+	composes: textfield from './common.css';
+	width: 100%;
+}

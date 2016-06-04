@@ -1,0 +1,29 @@
+
+.container {
+	padding: 1rem 0;
+	display: flex;
+}
+
+.container > *:not(:first-child) {
+	margin-left: 0.8rem;
+	flex-grow: 1;
+}
+
+.container > *:first-child {
+	flex-grow: 0;
+}
+
+.container > *:last-child {
+	flex-grow: 0;
+}
+
+.name {
+	composes: textfield from './common.css';
+	width: 120px;
+	font-size: 0.8rem;
+}
+
+.remove {
+	padding: 0.3rem 0;
+	composes: link from './common.css';
+}
