@@ -8,9 +8,8 @@ export default class Identifier extends Component {
   	const { name } = this.props;
     return (
       <div className={styles.container}>
-        <input type='text' className={styles.name} value={name} />
+      	<div className={styles.name}>{name}</div>
         <input type='text' className={styles.description} />
-        <div className={styles.remove}>Remove</div>
       </div>
     );
   }

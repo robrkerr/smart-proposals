@@ -11,12 +11,11 @@ body {
 
 .main {
   background: hsl(0,0%,99%);
-  position: relative;
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
-  height: 100%;
   padding: 2rem;
+  min-height: 100%;
 }
 
 .label {

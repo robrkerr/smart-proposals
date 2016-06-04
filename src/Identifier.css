@@ -13,17 +13,16 @@
 	flex-grow: 0;
 }
 
-.container > *:last-child {
-	flex-grow: 0;
+.name {
+	padding: 0.5rem 0;
+	width: 120px;
 }
 
-.name {
+.description {
 	composes: textfield from './common.css';
-	width: 120px;
-	font-size: 0.8rem;
 }
 
 .remove {
-	padding: 0.3rem 0;
+	padding: 0.5rem 0;
 	composes: link from './common.css';
 }
