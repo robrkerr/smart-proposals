@@ -3,40 +3,115 @@ import TextField from './TextField'
 import Identifier from './Identifier'
 import styles from './app.css'
 
+const identifierPrefixes = ['COMPANY','PROJECT','PERSON','OTHER'];
+const fields = [{
+  name: 'Title'
+}, {
+  name: 'Description',
+  lines: 5
+}];
+
 function extractWords(text,prefixes) {
   const str = prefixes.map(prefix => "\\b" + prefix + "_\\w+").join("|");
   return text.match(new RegExp(str,"g"));
 }
 
+function replaceIdentifiers(texts,currId,newId) {
+  return texts.map(text => {
+    return text.replace(new RegExp("\\b" + currId + "\\b","g"), newId);
+  });
+}
+
+function getElementCounts(list) {
+  let unique = [];
+  let counts = [];
+  for (let i = 0; i < list.length; i++) {
+    const x = list[i];
+    if (counts[x] !== undefined) {
+      counts[x] += 1;
+    } else {
+      unique.push(x);
+      counts[x] = 1;
+    }
+  }
+  return unique.map(element => ({
+    value: element,
+    count: counts[element]
+  }));
+}
+
 function getIdentifiers(identifiersBySection) {
   const flattenIdentifiers = [].concat.apply([], identifiersBySection);
-  return [...new Set(flattenIdentifiers)];
+  return getElementCounts(flattenIdentifiers).map(x => ({
+    name: x.value, 
+    count: x.count
+  }));
 }
 
 export default class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { identifiersBySection: [[],[]] };
+    this.handleUpdateField = this.handleUpdateField.bind(this);
+    this.handleUpdateAllFields = this.handleUpdateAllFields.bind(this);
+    this.handleUpdateIdentifier = this.handleUpdateIdentifier.bind(this);
+    this.handleUpdateIdentifierName = this.handleUpdateIdentifierName.bind(this);
+    this.state = { 
+      identifiersBySection: fields.map(field => []),
+      identifiers: [],
+      identifierContexts: {},
+      fieldTexts: fields.map(field => '')
+    };
   }
 
-  handleUpdate(text,fieldIndex) {
-    const identifierPrefixes = ['COMPANY','PROJECT','PERSON','OTHER'];
+  handleUpdateField(text,fieldIndex) {
     const sectionIdentifiers = extractWords(text, identifierPrefixes);
-    console.log(sectionIdentifiers);
     const { identifiersBySection } = this.state;
-    this.setState({
-      identifiersBySection: identifiersBySection.map((identifiers,i) => {
-        return (i == fieldIndex) ? 
-          ((sectionIdentifiers == null) ? [] : sectionIdentifiers) : 
-          identifiers;
-      })
+    const newIdentifiersBySection = identifiersBySection.map((identifiers,i) => {
+      return (i == fieldIndex) ? 
+        ((sectionIdentifiers == null) ? [] : sectionIdentifiers) : 
+        identifiers;
     });
+    const newFieldTexts = this.state.fieldTexts.map((fieldText,i) => (
+      (i == fieldIndex) ? text : fieldText
+    ));
+    this.setState({
+      identifiersBySection: newIdentifiersBySection,
+      identifiers: getIdentifiers(newIdentifiersBySection),
+      fieldTexts: newFieldTexts
+    });
+  }
+
+  handleUpdateAllFields(newFieldTexts) {
+    const newIdentifiersBySection = newFieldTexts.map((text,i) => {
+      const sectionIdentifiers = extractWords(text, identifierPrefixes);
+      return (sectionIdentifiers == null) ? [] : sectionIdentifiers;
+    });
+    this.setState({
+      identifiersBySection: newIdentifiersBySection,
+      identifiers: getIdentifiers(newIdentifiersBySection),
+      fieldTexts: newFieldTexts
+    });
+  }
+
+  handleUpdateIdentifier(text,identifierIndex) {
+    let newIdentifierContexts = {...this.state.identifierContexts};
+    newIdentifierContexts[this.state.identifiers[identifierIndex]] = text;
+    this.setState({
+      identifierContexts: newIdentifierContexts
+    });
+  }
+
+  handleUpdateIdentifierName(text,identifierIndex) {
+    const { identifiers, fieldTexts } = this.state;
+    const currIdentifier = identifiers[identifierIndex].name;
+    const newFieldTexts = replaceIdentifiers(fieldTexts, currIdentifier, text);
+    this.handleUpdateAllFields(newFieldTexts);
   }
   
   render() {
-    const identifiers = getIdentifiers(this.state.identifiersBySection);
-    const handleUpdate = this.handleUpdate.bind(this);
+    const { identifiers, identifierContexts, fieldTexts } = this.state;
+    const { handleUpdateField, handleUpdateIdentifier, handleUpdateIdentifierName } = this;
     return (
       <div className={styles.main}>
         <div className={styles.label}>
@@ -45,8 +120,11 @@ export default class App extends Component {
         <div className={styles.label}>
           Please self-sanitise these when referring to things stuff as companies, projects and people with generic identifiers, such as COMPANY_A. Stick to the following prefixes: COMPANY, PROJECT, PERSON and OTHER.
         </div>
-        <TextField index={0} label='Title' onUpdate={handleUpdate}></TextField>
-        <TextField index={1} label='Description' lines='5' onUpdate={handleUpdate}></TextField>
+        {
+          fields.map((fieldDetails,i) => (
+            <TextField key={i} index={i} {...fieldDetails} value={fieldTexts[i]} onUpdate={handleUpdateField}></TextField>
+          ))
+        }
         {
           identifiers.length > 0 ? (
             <div className={styles.label}>
@@ -60,7 +138,7 @@ export default class App extends Component {
         }
         {
           identifiers.map((identifier,i) => 
-            <Identifier key={i} name={identifier} description=''></Identifier>    
+            <Identifier key={i} index={i} name={identifier.name} description={identifierContexts[identifier.name]} onUpdate={handleUpdateIdentifier} onUpdateName={handleUpdateIdentifierName}></Identifier>    
           )
         }
       </div>

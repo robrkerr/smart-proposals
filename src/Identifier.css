@@ -14,8 +14,8 @@
 }
 
 .name {
-	padding: 0.5rem 0;
-	width: 120px;
+	composes: textfield from './common.css';
+	width: 150px;
 }
 
 .description {

@@ -9,7 +9,7 @@ export default class TextField extends Component {
   }
 
   render() {
-    const { label } = this.props;
+    const { label, value } = this.props;
     const handleUpdate = this.handleUpdate.bind(this);
     const lines = (this.props.lines || 1)*2;
     const fieldStyles = {height: lines + 'rem'};
@@ -19,7 +19,7 @@ export default class TextField extends Component {
           {label}
         </div>
         <div>
-          <textarea className={styles.field} style={fieldStyles} onChange={handleUpdate}></textarea>
+          <textarea className={styles.field} style={fieldStyles} onChange={handleUpdate} value={value}></textarea>
         </div>
       </div>
     );
