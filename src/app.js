@@ -4,13 +4,21 @@ import Identifier from './Identifier'
 import styles from './app.css'
 
 const identifierPrefixes = ['COMPANY','PROJECT','PERSON','OTHER'];
-const fields = [{
-  name: 'Title'
+
+let fields = [{
+  name: 'Title',
+  text: 'Doing cool things with Threejs'
 }, {
   name: 'Description',
   lines: 5,
-  text: 'COMPANY_adjh'
+  text: 'As part of my work for COMPANY_A, I am developing PROJECT_A and we are doing some amazing things with Threejs. Building on what PERSON_A built, we show that it is possible to...'
 }];
+
+let initialContexts = {
+  COMPANY_A: 'Recent startup that will only be familar to a few people.',
+  PROJECT_A: 'New project that would not have been spoken about in a conference talk.',
+  PERSON_A: 'Well known and respected Javascript developer.'
+}
 
 function extractIdentifiers(text,prefixes) {
   const str = prefixes.map(prefix => "\\b" + prefix + "_\\w+").join("|");
@@ -66,7 +74,7 @@ export default class App extends Component {
     this.state = { 
       identifiersBySection: fields.map(field => []),
       identifiers: [],
-      identifierContexts: {},
+      identifierContexts: initialContexts,
       fieldTexts: fields.map(field => field.text || '')
     };
   }
@@ -104,7 +112,7 @@ export default class App extends Component {
 
   handleUpdateIdentifier(text,identifierIndex) {
     let newIdentifierContexts = {...this.state.identifierContexts};
-    newIdentifierContexts[this.state.identifiers[identifierIndex]] = text;
+    newIdentifierContexts[this.state.identifiers[identifierIndex].full] = text;
     this.setState({
       identifierContexts: newIdentifierContexts
     });
@@ -116,6 +124,12 @@ export default class App extends Component {
     const newIdentifier = identifiers[identifierIndex].type + '_' + text;
     const newFieldTexts = replaceIdentifiers(fieldTexts, currIdentifier, newIdentifier);
     this.handleUpdateAllFields(newFieldTexts);
+    let newIdentifierContexts = {...this.state.identifierContexts};
+    newIdentifierContexts[newIdentifier] = this.state.identifierContexts[currIdentifier];
+    this.setState({
+      identifierContexts: newIdentifierContexts
+    });
+
   }
   
   render() {
@@ -147,7 +161,7 @@ export default class App extends Component {
         }
         {
           identifiers.map((identifier,i) => 
-            <Identifier key={i} index={i} {...identifier} description={identifierContexts[identifier.name]} onUpdate={handleUpdateIdentifier} onUpdateName={handleUpdateIdentifierName}></Identifier>    
+            <Identifier key={i} index={i} {...identifier} description={identifierContexts[identifier.full]} onUpdate={handleUpdateIdentifier} onUpdateName={handleUpdateIdentifierName}></Identifier>    
           )
         }
       </div>
