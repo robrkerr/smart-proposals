@@ -6,18 +6,21 @@ import styles from './app.css'
 const identifierPrefixes = ['COMPANY','PROJECT','PERSON','OTHER'];
 
 let fields = [{
-  name: 'Title',
-  text: 'Doing cool things with Threejs'
+  name: 'Title'
 }, {
   name: 'Description',
-  lines: 5,
-  text: 'As part of my work for COMPANY_A, I am developing PROJECT_A and we are doing some amazing things with Threejs. Building on what PERSON_A built, we show that it is possible to...'
+  lines: 5
 }];
 
-let initialContexts = {
-  COMPANY_A: 'Recent startup that will only be familar to a few people.',
-  PROJECT_A: 'New project that would not have been spoken about in a conference talk.',
-  PERSON_A: 'Well known and respected Javascript developer.'
+let initialContexts = {};
+
+const url = window.location.href;
+if (url.split('?')[1] == 'test') {
+  fields[0]['text'] = 'Doing cool things with Threejs';
+  fields[1]['text'] = 'As part of my work for COMPANY_A, I am developing PROJECT_A and we are doing some amazing things with Threejs. Building on what PERSON_A built, we show that it is possible to...';
+  initialContexts['COMPANY_A'] = 'Recent startup that will only be familar to a few people.';
+  initialContexts['PROJECT_A'] = 'New project that would not have been spoken about in a conference talk.';
+  initialContexts['PERSON_A']  = 'Well known and respected Javascript developer.';
 }
 
 function extractIdentifiers(text,prefixes) {

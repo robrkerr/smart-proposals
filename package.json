@@ -3,7 +3,7 @@
   "scripts": {
     "test": "webpack",
     "start": "webpack-dev-server --content-base public/",
-    "clean": "rm -rf dist",
+    "clean": "rm -f public/bundle.js; rm -f public/style.css",
     "build": "npm run clean && webpack"
   },
   "author": "Robert Kerr",
