@@ -8,12 +8,18 @@ const fields = [{
   name: 'Title'
 }, {
   name: 'Description',
-  lines: 5
+  lines: 5,
+  text: 'COMPANY_adjh'
 }];
 
-function extractWords(text,prefixes) {
+function extractIdentifiers(text,prefixes) {
   const str = prefixes.map(prefix => "\\b" + prefix + "_\\w+").join("|");
-  return text.match(new RegExp(str,"g"));
+  const matches = text.match(new RegExp(str,"g"));
+  return (matches == null) ? [] : matches.map(match => ({
+    full: match,
+    type: match.split('_')[0], 
+    name: match.split('_')[1]
+  }));
 }
 
 function replaceIdentifiers(texts,currId,newId) {
@@ -22,28 +28,29 @@ function replaceIdentifiers(texts,currId,newId) {
   });
 }
 
-function getElementCounts(list) {
+function getElementCounts(list, func) {
+  const f = (func == undefined) ? (x => x) : func;
   let unique = [];
   let counts = [];
   for (let i = 0; i < list.length; i++) {
-    const x = list[i];
+    const x = f(list[i]);
     if (counts[x] !== undefined) {
       counts[x] += 1;
     } else {
-      unique.push(x);
+      unique.push(list[i]);
       counts[x] = 1;
     }
   }
   return unique.map(element => ({
     value: element,
-    count: counts[element]
+    count: counts[f(element)]
   }));
 }
 
 function getIdentifiers(identifiersBySection) {
   const flattenIdentifiers = [].concat.apply([], identifiersBySection);
-  return getElementCounts(flattenIdentifiers).map(x => ({
-    name: x.value, 
+  return getElementCounts(flattenIdentifiers, x => x.full).map(x => ({
+    ...x.value, 
     count: x.count
   }));
 }
@@ -60,19 +67,21 @@ export default class App extends Component {
       identifiersBySection: fields.map(field => []),
       identifiers: [],
       identifierContexts: {},
-      fieldTexts: fields.map(field => '')
+      fieldTexts: fields.map(field => field.text || '')
     };
   }
 
+  componentWillMount() {
+    this.handleUpdateAllFields(this.state.fieldTexts);
+  }
+
   handleUpdateField(text,fieldIndex) {
-    const sectionIdentifiers = extractWords(text, identifierPrefixes);
-    const { identifiersBySection } = this.state;
-    const newIdentifiersBySection = identifiersBySection.map((identifiers,i) => {
-      return (i == fieldIndex) ? 
-        ((sectionIdentifiers == null) ? [] : sectionIdentifiers) : 
-        identifiers;
-    });
-    const newFieldTexts = this.state.fieldTexts.map((fieldText,i) => (
+    const sectionIdentifiers = extractIdentifiers(text, identifierPrefixes);
+    const { identifiersBySection, fieldTexts } = this.state;
+    const newIdentifiersBySection = identifiersBySection.map((identifiers,i) => (
+      (i == fieldIndex) ? sectionIdentifiers : identifiers
+    ));
+    const newFieldTexts = fieldTexts.map((fieldText,i) => (
       (i == fieldIndex) ? text : fieldText
     ));
     this.setState({
@@ -84,8 +93,7 @@ export default class App extends Component {
 
   handleUpdateAllFields(newFieldTexts) {
     const newIdentifiersBySection = newFieldTexts.map((text,i) => {
-      const sectionIdentifiers = extractWords(text, identifierPrefixes);
-      return (sectionIdentifiers == null) ? [] : sectionIdentifiers;
+      return extractIdentifiers(text, identifierPrefixes);
     });
     this.setState({
       identifiersBySection: newIdentifiersBySection,
@@ -104,8 +112,9 @@ export default class App extends Component {
 
   handleUpdateIdentifierName(text,identifierIndex) {
     const { identifiers, fieldTexts } = this.state;
-    const currIdentifier = identifiers[identifierIndex].name;
-    const newFieldTexts = replaceIdentifiers(fieldTexts, currIdentifier, text);
+    const currIdentifier = identifiers[identifierIndex].full;
+    const newIdentifier = identifiers[identifierIndex].type + '_' + text;
+    const newFieldTexts = replaceIdentifiers(fieldTexts, currIdentifier, newIdentifier);
     this.handleUpdateAllFields(newFieldTexts);
   }
   
@@ -138,7 +147,7 @@ export default class App extends Component {
         }
         {
           identifiers.map((identifier,i) => 
-            <Identifier key={i} index={i} name={identifier.name} description={identifierContexts[identifier.name]} onUpdate={handleUpdateIdentifier} onUpdateName={handleUpdateIdentifierName}></Identifier>    
+            <Identifier key={i} index={i} {...identifier} description={identifierContexts[identifier.name]} onUpdate={handleUpdateIdentifier} onUpdateName={handleUpdateIdentifierName}></Identifier>    
           )
         }
       </div>

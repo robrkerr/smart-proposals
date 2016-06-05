@@ -13,11 +13,12 @@ export default class Identifier extends Component {
   }
 
   render() {
-  	const { name, description } = this.props;
+  	const { type, name, description } = this.props;
   	const handleUpdate = this.handleUpdate.bind(this);
   	const handleUpdateName = this.handleUpdateName.bind(this);
     return (
       <div className={styles.container}>
+      	<div className={styles.type}>{type}</div>
       	<input type='text' className={styles.name} value={name} onChange={handleUpdateName} />
         <input type='text' className={styles.description} value={description} onChange={handleUpdate} />
       </div>
