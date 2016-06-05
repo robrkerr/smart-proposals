@@ -6,9 +6,9 @@ import styles from './app.css'
 const identifierPrefixes = ['COMPANY','PROJECT','PERSON','OTHER'];
 
 let fields = [{
-  name: 'Title'
+  label: 'Title'
 }, {
-  name: 'Description',
+  label: 'Description',
   lines: 5
 }];
 
