@@ -17,7 +17,7 @@
 
 .name {
 	composes: textfield from './common.css';
-	width: 120px;
+	width: 80px;
 	flex-grow: 0;
 }
 

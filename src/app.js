@@ -141,7 +141,7 @@ export default class App extends Component {
           Tell us the title and description of the awesome talk you'd like to give. 
         </div>
         <div className={styles.label}>
-          Please self-sanitise these when referring to things stuff as companies, projects and people with generic identifiers, such as COMPANY_A. Stick to the following prefixes: COMPANY, PROJECT, PERSON and OTHER.
+          Please self-sanitise these when referring to things such as companies, projects and people with generic identifiers, such as COMPANY_A. Stick to the following prefixes: COMPANY, PROJECT, PERSON and OTHER.
         </div>
         {
           fields.map((fieldDetails,i) => (
