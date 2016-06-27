@@ -2,8 +2,34 @@ import React, { Component } from 'react'
 import TextField from './TextField'
 import Identifier from './Identifier'
 import styles from './app.css'
+import underlineStyles from './underline.css'
+import {CompositeDecorator, EditorState, ContentState} from 'draft-js'
 
+const contentBlockDelimiter = '\n';
 const identifierPrefixes = ['COMPANY','PROJECT','PERSON','OTHER'];
+
+function findWithRegex(regex, contentBlock, callback) {
+  let text = contentBlock.getText();
+  let matchArr, start = 0;
+  while ((matchArr = regex.exec(text)) !== null) {
+    callback(start + matchArr.index, start + matchArr.index + matchArr[0].length);
+    start += matchArr.index + matchArr[0].length;
+    text = text.slice(matchArr.index + matchArr[0].length);
+  }
+}
+
+function updateDecorations(editorState,identifiers) {
+  const newCompositeDecorator = new CompositeDecorator(identifiers.map((identifier,i) => {
+    const re = new RegExp("\\b" + identifier.full + "\\b");
+    const className = underlineStyles['underline-' + (i % 6)];
+    return {
+      strategy: (contentBlock, callback) => findWithRegex(re, contentBlock, callback),
+      component: (props) => <span {...props} className={className}>{props.children}</span>,
+    }
+  }));
+  // return EditorState.createWithContent(editorState.getCurrentContent(), newCompositeDecorator);
+  return EditorState.set(editorState, {decorator: newCompositeDecorator});
+}
 
 let fields = [{
   label: 'Title'
@@ -25,12 +51,22 @@ if (url.split('?')[1] == 'test') {
 
 function extractIdentifiers(text,prefixes) {
   const str = prefixes.map(prefix => "\\b" + prefix + "_\\w+").join("|");
-  const matches = text.match(new RegExp(str,"g"));
-  return (matches == null) ? [] : matches.map(match => ({
-    full: match,
-    type: match.split('_')[0], 
-    name: match.split('_')[1]
-  }));
+  const re = new RegExp(str);
+  let remainingText = text;
+  let match = re.exec(remainingText);
+  let identifiers = [];
+  while (match) {
+    identifiers.push({
+      full: match[0],
+      type: match[0].split('_')[0], 
+      name: match[0].split('_')[1],
+      positionStart: match.index,
+      positionEnd: match.index + match[0].length - 1
+    });
+    remainingText = remainingText.slice(match.index + match[0].length);
+    match = re.exec(remainingText);
+  }
+  return identifiers;
 }
 
 function replaceIdentifiers(texts,currId,newId) {
@@ -39,30 +75,34 @@ function replaceIdentifiers(texts,currId,newId) {
   });
 }
 
-function getElementCounts(list, func) {
+function group(list, func) {
   const f = (func == undefined) ? (x => x) : func;
   let unique = [];
-  let counts = [];
+  let groups = [];
   for (let i = 0; i < list.length; i++) {
     const x = f(list[i]);
-    if (counts[x] !== undefined) {
-      counts[x] += 1;
+    if (groups[x] !== undefined) {
+      groups[x].push(list[i]);
     } else {
-      unique.push(list[i]);
-      counts[x] = 1;
+      unique.push(x);
+      groups[x] = [list[i]];
     }
   }
-  return unique.map(element => ({
-    value: element,
-    count: counts[f(element)]
+  return unique.map(x => ({
+    name: x,
+    items: groups[x]
   }));
 }
 
 function getIdentifiers(identifiersBySection) {
   const flattenIdentifiers = [].concat.apply([], identifiersBySection);
-  return getElementCounts(flattenIdentifiers, x => x.full).map(x => ({
-    ...x.value, 
-    count: x.count
+  return group(flattenIdentifiers, x => x.full).map(x => ({
+    full: x.name, 
+    type: x.items[0].type,
+    name: x.items[0].name,
+    startPositions: x.items.map(x => x.positionStart),
+    endPositions: x.items.map(x => x.positionEnd),
+    count: x.items.length
   }));
 }
 
@@ -74,19 +114,29 @@ export default class App extends Component {
     this.handleUpdateAllFields = this.handleUpdateAllFields.bind(this);
     this.handleUpdateIdentifier = this.handleUpdateIdentifier.bind(this);
     this.handleUpdateIdentifierName = this.handleUpdateIdentifierName.bind(this);
+    const initialFieldStates = fields.map(field => {
+      if (field.text) {
+        const contentState = ContentState.createFromText(field.text,contentBlockDelimiter);
+        return EditorState.createWithContent(contentState);
+
+      } else {
+        return EditorState.createEmpty();
+      }
+    });
     this.state = { 
       identifiersBySection: fields.map(field => []),
       identifiers: [],
       identifierContexts: initialContexts,
-      fieldTexts: fields.map(field => field.text || '')
+      fieldStates: initialFieldStates
     };
   }
 
   componentWillMount() {
-    this.handleUpdateAllFields(this.state.fieldTexts);
+    this.handleUpdateAllFields(this.state.fieldStates);
   }
 
-  handleUpdateField(text,fieldIndex) {
+  handleUpdateField(newFieldState,fieldIndex) {
+    const text = newFieldState.getCurrentContent().getPlainText(contentBlockDelimiter);
     const sectionIdentifiers = extractIdentifiers(text, identifierPrefixes);
     const { identifiersBySection, fieldTexts } = this.state;
     const newIdentifiersBySection = identifiersBySection.map((identifiers,i) => (
@@ -110,25 +160,39 @@ export default class App extends Component {
         }
       }
     }
-    const newFieldTexts = fieldTexts.map((fieldText,i) => (
-      (i == fieldIndex) ? text : fieldText
+    // const newFieldStates = this.state.fieldStates.map((state,i) => (
+    //   (i == fieldIndex) ? 
+    //     updateDecorations(newFieldState,newIdentifiers) : 
+    //     updateDecorations(state,newIdentifiers)
+    // ));
+    const newFieldStates = this.state.fieldStates.map((state,i) => (
+      (i == fieldIndex) ? newFieldState : state
     ));
     this.setState({
       identifiersBySection: newIdentifiersBySection,
       identifiers: newIdentifiers,
       identifierContexts: newIdentifierContexts,
-      fieldTexts: newFieldTexts
+      fieldStates: newFieldStates
+    });
+    requestAnimationFrame(() => {
+      this.setState({
+        fieldStates: newFieldStates.map(state => updateDecorations(state,newIdentifiers))
+      });
     });
   }
 
-  handleUpdateAllFields(newFieldTexts) {
+  handleUpdateAllFields(newFieldStates) {
+    const newFieldTexts = newFieldStates.map(state => {
+      return state.getCurrentContent().getPlainText(' ');
+    });
     const newIdentifiersBySection = newFieldTexts.map((text,i) => {
       return extractIdentifiers(text, identifierPrefixes);
     });
+    const newIdentifiers = getIdentifiers(newIdentifiersBySection);
     this.setState({
       identifiersBySection: newIdentifiersBySection,
-      identifiers: getIdentifiers(newIdentifiersBySection),
-      fieldTexts: newFieldTexts
+      identifiers: newIdentifiers,
+      fieldStates: newFieldStates.map(state => updateDecorations(state,newIdentifiers))
     });
   }
 
@@ -141,11 +205,17 @@ export default class App extends Component {
   }
 
   handleUpdateIdentifierName(text,identifierIndex) {
-    const { identifiers, fieldTexts } = this.state;
+    const { identifiers, fieldStates } = this.state;
     const currIdentifier = identifiers[identifierIndex].full;
     const newIdentifier = identifiers[identifierIndex].type + '_' + text;
+    const fieldTexts = fieldStates.map(state => (
+      state.getCurrentContent().getPlainText(' ')
+    ));
     const newFieldTexts = replaceIdentifiers(fieldTexts, currIdentifier, newIdentifier);
-    this.handleUpdateAllFields(newFieldTexts);
+    const newFieldStates = newFieldTexts.map(text => {
+      return EditorState.createWithContent(ContentState.createFromText(text, contentBlockDelimiter));
+    });
+    this.handleUpdateAllFields(newFieldStates);
     let newIdentifierContexts = {...this.state.identifierContexts};
     newIdentifierContexts[newIdentifier] = this.state.identifierContexts[currIdentifier];
     this.setState({
@@ -154,7 +224,7 @@ export default class App extends Component {
   }
   
   render() {
-    const { identifiers, identifierContexts, fieldTexts } = this.state;
+    const { identifiers, identifierContexts, fieldStates } = this.state;
     const { handleUpdateField, handleUpdateIdentifier, handleUpdateIdentifierName } = this;
     return (
       <div className={styles.main}>
@@ -166,7 +236,7 @@ export default class App extends Component {
         </div>
         {
           fields.map((fieldDetails,i) => (
-            <TextField key={i} index={i} {...fieldDetails} value={fieldTexts[i]} onUpdate={handleUpdateField}></TextField>
+            <TextField key={i} index={i} {...fieldDetails} state={fieldStates[i]} onUpdate={handleUpdateField}></TextField>
           ))
         }
         {

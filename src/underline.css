@@ -1,0 +1,35 @@
+
+.underline {
+  text-decoration: none;
+  border-bottom: 2px solid black;
+}
+
+.underline-0 {
+  composes: underline;
+  border-bottom-color: blue;
+}
+
+.underline-1 {
+  composes: underline;
+  border-bottom-color: red;
+}
+
+.underline-2 {
+  composes: underline;
+  border-bottom-color: green;
+}
+
+.underline-3 {
+  composes: underline;
+  border-bottom-color: orange;
+}
+
+.underline-4 {
+  composes: underline;
+  border-bottom-color: purple;
+}
+
+.underline-5 {
+  composes: underline;
+  border-bottom-color: magenta;
+}

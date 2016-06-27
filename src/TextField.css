@@ -8,6 +8,9 @@
 }
 
 .field {
-	composes: textfield from './common.css';
 	width: 100%;
+	background-color: white;
+	line-height: 1.6em;
+	padding: 3px 8px;
+	border: solid 1px lightgray;
 }

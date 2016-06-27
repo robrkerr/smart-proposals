@@ -1,28 +1,30 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
+import {Editor, ContentState} from 'draft-js'
 import styles from './TextField.css'
 
 export default class TextField extends Component {
 
-  handleUpdate(event) {
-    this.props.onUpdate(event.target.value,this.props.index);
+  constructor(props) {
+    super(props);
+    this.handleUpdate = (editorState) => props.onUpdate(editorState,props.index);
   }
 
   render() {
-    const { label, value } = this.props;
-    const handleUpdate = this.handleUpdate.bind(this);
+    const { label, state, indentiers } = this.props;
     const lines = (this.props.lines || 1)*2;
-    const fieldStyles = {height: lines + 'rem'};
+    const fieldStyles = {minHeight: lines + 'rem'};
     return (
       <div className={styles.container}>
         <div className={styles.label}>
           {label}
         </div>
-        <div>
-          <textarea className={styles.field} style={fieldStyles} onChange={handleUpdate} value={value}></textarea>
+        <div className={styles.field} style={fieldStyles}>
+          <Editor contentEditable={false} editorState={state} onChange={this.handleUpdate} />
         </div>
       </div>
     );
   }
 
 }
+
