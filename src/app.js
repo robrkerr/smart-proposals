@@ -92,12 +92,31 @@ export default class App extends Component {
     const newIdentifiersBySection = identifiersBySection.map((identifiers,i) => (
       (i == fieldIndex) ? sectionIdentifiers : identifiers
     ));
+    const newIdentifiers = getIdentifiers(newIdentifiersBySection);
+    const oldIdentifiers = this.state.identifiers;
+    let newIdentifierContexts = {...this.state.identifierContexts};
+    if (newIdentifiers.length == oldIdentifiers.length) {
+      for (let i = 0; i < newIdentifiers.length; i++) {
+        if (newIdentifiers[i].full != oldIdentifiers[i].full) {
+          if (newIdentifiers[i].type == oldIdentifiers[i].type) {
+            if (newIdentifiers[i].count == 1) {
+              // we just modified the name of an identifier  
+              const text = newIdentifierContexts[oldIdentifiers[i].full];
+              if (!newIdentifierContexts[newIdentifiers[i].full]) {
+                newIdentifierContexts[newIdentifiers[i].full] = text;  
+              }
+            }
+          }
+        }
+      }
+    }
     const newFieldTexts = fieldTexts.map((fieldText,i) => (
       (i == fieldIndex) ? text : fieldText
     ));
     this.setState({
       identifiersBySection: newIdentifiersBySection,
-      identifiers: getIdentifiers(newIdentifiersBySection),
+      identifiers: newIdentifiers,
+      identifierContexts: newIdentifierContexts,
       fieldTexts: newFieldTexts
     });
   }
@@ -132,7 +151,6 @@ export default class App extends Component {
     this.setState({
       identifierContexts: newIdentifierContexts
     });
-
   }
   
   render() {
