@@ -1,0 +1,118 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: hsl(0,0%,90%);
+  font-size: 16px;
+}
+
+.main-container {
+  background: hsl(0,0%,99%);
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100%;
+}
+
+.field-label {
+  font-size: 1rem;
+  padding: 1rem 0 0;
+}
+
+.field-note {
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  font-size: 0.9em;
+  color: hsl(0,0%,40%);
+}
+
+.field-text {
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1.6em;
+  padding: 0.1em 0.3em;
+  width: 100%;
+  margin: 1rem 0 0;
+}
+
+.description-container {
+  padding: 1rem 0 0;
+}
+
+.description-field {
+  width: 100%;
+  background-color: white;
+  line-height: 1.6em;
+  border: solid 1px lightgray;
+}
+
+.description-field .public-DraftEditor-content {
+  padding: 3px 8px;
+  min-height: 10rem;
+}
+
+.identifier-container {
+  padding: 1rem 0;
+  display: flex;
+}
+
+.identifier-container > *:not(:first-child) {
+  margin-left: 0.8rem;
+  
+}
+
+.identifier-type {
+  padding: 0.5rem 0;
+  width: 80px;
+  flex-grow: 0;
+}
+
+.identifier-name {
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1.6em;
+  padding: 0.1em 0.3em;
+  width: 80px;
+  flex-grow: 0;
+}
+
+.identifier-description {
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1.6em;
+  padding: 0.1em 0.3em;
+  flex-grow: 1;
+}
+
+.underline {
+  text-decoration: none;
+  border-bottom: 2px solid black;
+}
+
+.underline-0 {
+  border-bottom-color: blue;
+}
+
+.underline-1 {
+  border-bottom-color: red;
+}
+
+.underline-2 {
+  border-bottom-color: green;
+}
+
+.underline-3 {
+  border-bottom-color: orange;
+}
+
+.underline-4 {
+  border-bottom-color: purple;
+}
+
+.underline-5 {
+  border-bottom-color: magenta;
+}
