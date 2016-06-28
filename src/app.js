@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
 import SanitisingDescription from './SanitisingDescription'
 
+let initialTitle = '';
+const url = window.location.href;
+if (url.split('?')[1] == 'test') {
+  initialTitle = 'Doing cool things with Threejs';
+}
+
 export default class App extends Component {
 
   constructor(props) {
     super(props);
     this.handleUpdateTitle = this.handleUpdateTitle.bind(this);
-    this.state = {title: ''};
+    this.state = {title: initialTitle};
   }
 
   handleUpdateTitle(event) {

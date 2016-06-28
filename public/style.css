@@ -57,12 +57,18 @@ body {
 
 .identifier-container {
   padding: 1rem 0;
-  display: flex;
 }
 
 .identifier-container > *:not(:first-child) {
+  margin-top: 0.8rem;
+}
+
+.identifier-row {
+  display: flex;
+}
+
+.identifier-row > *:not(:first-child) {
   margin-left: 0.8rem;
-  
 }
 
 .identifier-type {
@@ -78,6 +84,14 @@ body {
   padding: 0.1em 0.3em;
   width: 80px;
   flex-grow: 0;
+}
+
+.identifier-redacted {
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1.6em;
+  padding: 0.1em 0.3em;
+  flex-grow: 1;
 }
 
 .identifier-description {
