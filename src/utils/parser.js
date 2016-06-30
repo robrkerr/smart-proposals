@@ -1,7 +1,7 @@
 import utils from './utils'
 
 function extractIdentifiers(text,prefixes) {
-  const str = prefixes.map(prefix => "\\b" + prefix + "_\\w+").join("|");
+  const str = prefixes.map(prefix => "\\b" + prefix + "_\\w*").join("|");
   const re = new RegExp(str);
   let remainingText = text;
   let match = re.exec(remainingText);
