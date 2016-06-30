@@ -11,9 +11,13 @@ export default class TextArea extends Component {
   render() {
     const { name, label, form } = this.props
     const value = form.data[name]
-    return <div className="Field">
-      <div className="Field_Label">{ label }</div>
-      <input type='text' className="field-text" value={value} onChange={this.handleUpdate.bind(this)}/>
-    </div>
+    if (label) {
+      return <div className="Field">
+        <div className="Field_Label">{ label }</div>
+        <input type='text' className="field-text" value={value} onChange={this.handleUpdate.bind(this)}/>
+      </div>
+    } else {
+      return <input type='text' className="field-text" value={value} onChange={this.handleUpdate.bind(this)}/>
+    }
   }
 }
