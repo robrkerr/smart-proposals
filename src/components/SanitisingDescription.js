@@ -13,6 +13,12 @@ let fields = [{
   lines: 5
 }];
 
+function haveIdentifiersChanged(oldList,newList) {
+  if (oldList.length != newList.length) return true;
+  for (var i in oldList) { if (oldList[i].full != newList[i].full) { return true; }}
+  return false;
+}
+
 function updateDecorations(editorState,identifiers) {
   const newCompositeDecorator = new CompositeDecorator(identifiers.map((identifier,i) => {
     const re = new RegExp("\\b" + identifier.full + "\\b");
@@ -49,47 +55,51 @@ export default class SanitisingDescription extends Component {
   }
 
   handleUpdateField(newFieldState,fieldIndex) {
+    const newFieldStates = this.getMyState(this.props).fieldStates.map((state,i) => (
+      (i == fieldIndex) ? newFieldState : state
+    ));
     const text = newFieldState.getCurrentContent().getPlainText(contentBlockDelimiter);
     const sectionIdentifiers = parser.extractIdentifiers(text, identifierPrefixes);
     const { identifiersBySection, fieldTexts } = this.getMyState(this.props);
-    const newIdentifiersBySection = identifiersBySection.map((identifiers,i) => (
-      (i == fieldIndex) ? sectionIdentifiers : identifiers
-    ));
-    const newIdentifiers = parser.collectIdentifiers(newIdentifiersBySection);
-    const oldIdentifiers = this.getMyState(this.props).identifiers;
-    let newIdentifierDetails = {...this.getMyState(this.props).identifierDetails};
-    if (newIdentifiers.length == oldIdentifiers.length) {
-      for (let i = 0; i < newIdentifiers.length; i++) {
-        if (newIdentifiers[i].full != oldIdentifiers[i].full) {
-          if (newIdentifiers[i].type == oldIdentifiers[i].type) {
-            if (newIdentifiers[i].count == 1) {
-              // we just modified the name of an identifier  
-              const text = newIdentifierDetails[oldIdentifiers[i].full];
-              if (!newIdentifierDetails[newIdentifiers[i].full]) {
-                newIdentifierDetails[newIdentifiers[i].full] = text;  
+    const identifiersChanged = haveIdentifiersChanged(identifiersBySection[fieldIndex],sectionIdentifiers);
+    if (identifiersChanged) {
+      const newIdentifiersBySection = identifiersBySection.map((identifiers,i) => (
+        (i == fieldIndex) ? sectionIdentifiers : identifiers
+      ));
+      const newIdentifiers = parser.collectIdentifiers(newIdentifiersBySection);
+      const oldIdentifiers = this.getMyState(this.props).identifiers;
+      let newIdentifierDetails = {...this.getMyState(this.props).identifierDetails};
+      if (newIdentifiers.length == oldIdentifiers.length) {
+        for (let i = 0; i < newIdentifiers.length; i++) {
+          if (newIdentifiers[i].full != oldIdentifiers[i].full) {
+            if (newIdentifiers[i].type == oldIdentifiers[i].type) {
+              if (newIdentifiers[i].count == 1) {
+                // we just modified the name of an identifier  
+                const text = newIdentifierDetails[oldIdentifiers[i].full];
+                if (!newIdentifierDetails[newIdentifiers[i].full]) {
+                  newIdentifierDetails[newIdentifiers[i].full] = text;  
+                }
               }
             }
           }
         }
-      }
-    }
-    const newFieldStates = this.getMyState(this.props).fieldStates.map((state,i) => (
-      (i == fieldIndex) ? newFieldState : state
-    ));
-    this.setMyState(this.props, {
-      identifiersBySection: newIdentifiersBySection,
-      identifiers: newIdentifiers,
-      identifierDetails: newIdentifierDetails,
-      fieldStates: newFieldStates
-    });
-    requestAnimationFrame(() => {
+      }  
       this.setMyState(this.props, {
         identifiersBySection: newIdentifiersBySection,
         identifiers: newIdentifiers,
         identifierDetails: newIdentifierDetails,
-        fieldStates: newFieldStates.map(state => updateDecorations(state,newIdentifiers))
+        fieldStates: newFieldStates
       });
-    });
+      requestAnimationFrame(() => {
+        this.setMyState(this.props, {
+          fieldStates: newFieldStates.map(state => updateDecorations(state,newIdentifiers))
+        });
+      });
+    } else {
+      this.setMyState(this.props, {
+        fieldStates: newFieldStates
+      });
+    }
   }
 
   handleUpdateAllFields(newFieldStates) {
