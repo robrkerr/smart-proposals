@@ -143,13 +143,14 @@ export default class SanitisingDescription extends Component {
   
   render() {
     const { identifiers, identifierDetails, fieldState } = this.state;
+    const { example } = this.props.form;
     const { handleUpdateField, handleUpdateIdentifierContext, handleUpdateIdentifierRedacted, handleUpdateIdentifierName } = this;
     return (
       <div>
-        <TextArea state={fieldState} onUpdate={handleUpdateField}></TextArea>
+        <TextArea state={fieldState} readonly={example} onUpdate={handleUpdateField}></TextArea>
         {
           identifiers.map((identifier,i) => 
-            <Identifier key={i} index={i} {...identifier} details={identifierDetails[identifier.full]} onUpdateContext={handleUpdateIdentifierContext} onUpdateName={handleUpdateIdentifierName} onUpdateRedacted={handleUpdateIdentifierRedacted}></Identifier>    
+            <Identifier readonly={example} key={i} index={i} {...identifier} details={identifierDetails[identifier.full]} onUpdateContext={handleUpdateIdentifierContext} onUpdateName={handleUpdateIdentifierName} onUpdateRedacted={handleUpdateIdentifierRedacted}></Identifier>    
           )
         }
       </div>

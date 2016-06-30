@@ -4,15 +4,21 @@ import ReactDOM from 'react-dom'
 export default class Identifier extends Component {
 
 	handleUpdateContext(event) {
-    this.props.onUpdateContext(event.target.value,this.props.index);
+    if (!this.props.readonly) {
+      this.props.onUpdateContext(event.target.value,this.props.index);  
+    }
   }
 
   handleUpdateName(event) {
-  	this.props.onUpdateName(event.target.value,this.props.index);
+    if (!this.props.readonly) {
+  	 this.props.onUpdateName(event.target.value,this.props.index);
+    }
   }
 
   handleUpdateRedacted(event) {
-    this.props.onUpdateRedacted(event.target.value,this.props.index);
+    if (!this.props.readonly) {
+      this.props.onUpdateRedacted(event.target.value,this.props.index);
+    }
   }
 
   render() {
