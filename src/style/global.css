@@ -4,8 +4,23 @@
   box-sizing: border-box;
 }
 
-body {
-  background: hsl(0,0%,90%);
+:root {
   font-size: 16px;
+}
+
+body {
   font-family: Avenir Next, sans-serif;
+}
+
+main {
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+main.css {
+  background: hsl(12, 86%, 48%);
+}
+
+main.js {
+  background: hsl(233, 71%, 40%);
 }

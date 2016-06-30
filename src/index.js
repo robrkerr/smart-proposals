@@ -4,11 +4,13 @@ import App from './components/App'
 import './style/style'
 
 const conf = window.location.hostname.match(/css/) ? {
+  id: 'css',
   title: 'CSSConf AU 2016',
-  domain: '2016.cssconf.com.au'
+  url: 'http://2016.cssconf.com.au'
 } : {
+  id: 'js',
   title: 'JSConf AU 2016',
-  domain: '2016.jsconfau.com'
+  url: 'http://2016.jsconfau.com'
 }
 
 ReactDOM.render(
