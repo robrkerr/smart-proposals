@@ -63,20 +63,24 @@ export default class App extends Component {
           <h1 className="Header">
             {conference.title} call for proposals
           </h1>
-          <p className="Intro">
-            This year we're doing things a little differently, you should have
-            a <a href={conference.url} className="Link">read about why</a>.
-          </p>
+          { submission.example
+            ? <p className="Intro">This is an example proposal that was accepted in a previous year.</p>
+            :
+            <p className="Intro">
+              This year we're doing things a little differently, you should have
+              a <a href={conference.url} className="Link">read about why</a>.
+            </p>
+          }
           <hr/>
           <TextField name="title" label="Title" form={submission}>
-
           </TextField>
           <div className="Field">
             <div className="Field_Label">
               Description
             </div>
             <div className="Field_Note">
-              <strong>NOTE</strong> please replace anything personally-identifiable in your talk submission with a string like COMPANY_A, PROJECT_B, PERSON_C, or OTHER_D.
+              <strong>NOTE</strong> please replace anything personally-identifiable in your talk submission with a
+              string like COMPANY_A, PROJECT_B, PERSON_C, or OTHER_D.
             </div>
             <SanitisingDescription name="description" label="Description" form={submission}/>
           </div>
@@ -97,10 +101,12 @@ export default class App extends Component {
           <TextField name="twitter" label="Twitter Handle" form={submission}/>
           <TextField name="photo" label="Photo Url" form={submission}/>
           <TextField name="email" label="Email Address" form={submission}/>
-          <div className="Form_Buttons">
-            <div className="Intro">Once you're happy with your submission, send it to us!</div>
-          <button type="submit" className="Button">Submit</button>
-          </div>
+          { submission.example ? null :
+            <div className="Form_Buttons">
+              <div className="Intro">Once you're happy with your submission, send it to us!</div>
+              <button type="submit" className="Button">Submit</button>
+            </div>
+          }
         </form>
       </main>
     );

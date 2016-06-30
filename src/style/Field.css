@@ -11,9 +11,13 @@
 }
 
 .Field_Note {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: hsl(0,0%,40%);
   line-height: 1.4;
+}
+.Field_Note strong {
+  font-weight: 700;
+  color: black;
 }
 
 .Field_Text {
