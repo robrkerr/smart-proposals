@@ -12,6 +12,9 @@
   transition: opacity ease-out 2s;
   pointer-events: none;
 }
+.Form.-submitted {
+  text-align: center;
+}
 
 .Header {
   font-size: 2rem;

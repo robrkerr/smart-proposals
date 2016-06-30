@@ -1,4 +1,4 @@
-import examples from './examples'
+import api from '../utils/api'
 
 const emptyData = {
   title: '',
@@ -9,14 +9,12 @@ const emptyData = {
   }
 }
 
-const api = window.location.hostname.match(/localhost/) ? 'http://localhost:3000' : 'https://vsconf-cfp.herokuapp.com'
-const exampleName = window.location.href.split('?')[1]
-
 export default class Submission {
-  constructor(conference) {
+  constructor(conference, prefill = {}) {
     this.conference = conference
-    this.data = examples[exampleName] || emptyData
-    this.example = examples[exampleName] !== undefined
+    this.data = prefill.data || emptyData
+    this.sekret = prefill.sekret
+    this.example = prefill.type === 'example'
   }
 
   submit() {
@@ -28,6 +26,7 @@ export default class Submission {
       },
       body: JSON.stringify({
         proposal: {
+          sekret: this.sekret,
           title: this.data.title,
           conference: this.conference.id,
           submission: this.data

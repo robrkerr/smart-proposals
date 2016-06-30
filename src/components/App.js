@@ -4,140 +4,89 @@ import Submission from '../models/Submission'
 import SanitisingDescription from './SanitisingDescription'
 import TextField from './TextField'
 import RadioButton from './RadioButton'
+import FormData from '../models/FormData'
 
 export default class App extends Component {
   constructor(props) {
-    super(props);
-    this.handleUpdateTitle = this.handleUpdateTitle.bind(this);
-    this.state = { submission: new Submission(props.conference), inProgress: false };
-  }
-
-  handleUpdateTitle(event) {
-    this.setState({ title: event.target.value });
+    super(props)
+    const { prefill, conference } = props
+    this.state = { submission: new Submission(conference, prefill), inProgress: false, submitted: false }
   }
 
   onSubmit(e) {
     e.preventDefault()
-    this.state.submission.submit().then(response => console.log(response))
+    this.setState({ inProgress: true })
+    this.state.submission.submit()
+      .then(response => this.setState({
+        submitted: `${window.location.href}?${response.sekret}`
+      }))
   }
 
   render() {
-    const { submission } = this.state;
-    const { conference } = this.props;
-    const newnessOptions = [
-      {
-        value: "Yes",
-        text: "Yes! I've given this talk several times and the version I bring to " + conference.title + " will be all the better for it!"
-      }, {
-        value: "Sort of",
-        text: "Sort of! I've given a version of this talk at a conference before but there'll be a decent chunk of new stuff for " + conference.title + "."
-      }, {
-        value: "Not filmed",
-        text: "Yes but at a meetup/at a conference which wasn't filmed. This will be the first time it's recorded and made available online."
-      }, {
-        value: "No",
-        text: "No! I'm hoping " + conference.title + " will be the first time I am able to!"
-      }
-    ];
-    const locationOptions = [
-      "Australia, New Zealand & Oceania",
-      "North America",
-      "Central & South America",
-      "Western Europe",
-      "Eastern Europe, Middle East & Central Asia",
-      "Africa",
-      "East & South-East Asia"
-    ];
-    const techExperienceOptions = [
-      {
-        value: 'Senior',
-        text: "Senior/Leader. I feel fairly knowledgable about a good breadth of topics."
-      }, {
-        value: 'Expert',
-        text: "Area expert. Wouldn't describe myself as a \"senior\" but I feel confident in my knowledge of the subject matter of my talk/the conference at large."
-      }, {
-        value: "Mid level",
-        text: "Mid level. Not an expert, not a junior, but excited to learn & excited to help other people learn."
-      }, {
-        value: "Junior",
-        text: "Junior. New to the industry but keen to share my perspective & knowledge."
-      }, {
-        value: "Outside tech",
-        text: "Not in Tech. I'm employed in another industry and therefore I'll be able to give a different perspective to my topic."
-      }, {
-        value: "Student",
-        text: "Student. I'm still learning, but enthusiastic to share what I know."
-      }, {
-        value: "Other",
-        text: "Other"
-      }
-    ];
-    const speakingExperienceOptions = [
-      {
-        value: "Plenty",
-        text: "Plenty. You tell me what time I'm on, I'll do the rest."
-      }, {
-        value: "Some",
-        text: "Some. I've spoken at more than 3 conferences, but I still don't think I'm an old hand."
-      }, {
-        value: "A little",
-        text: "A little. I've spoken at 1-3 conferences already, and keen to do more."
-      }, {
-        value: "No conferences",
-        text: "Not at conferences (yet). This would be my first major conference, but I've spoken at meetups or done other presenting first."
-      }, {
-        value: "None",
-        text: "None whatsoever. I'm excited to start!"
-      }, {
-        value: "Other",
-        text: "Other"
-      }
-    ];
+    const { submission, inProgress, submitted } = this.state
+    const { conference } = this.props
+    const { newnessOptions, locationOptions, techExperienceOptions, speakingExperienceOptions } = FormData(conference)
+
     return (
       <main className={conference.id}>
-        <form onSubmit={this.onSubmit.bind(this)} className="Form">
-          <h1 className="Header">
-            {conference.title} call for proposals
-          </h1>
-          { submission.example
-            ? <p className="Intro">This is an example proposal that was accepted in a previous year.</p>
-            :
-            <p className="Intro">
-              This year we're doing things a little differently, you should have
-              a <a href={conference.url} className="Link">read about why</a>.
+        { submitted ?
+          <div className="Form -submitted">
+            <h1 className="Header">
+              You're Awesome 😍
+            </h1>
+            <p className="Intro">You can come back and edit your submission any time at
+              <br/>
+              <a target="_blank" href={submitted} className="Link">{submitted}</a>
             </p>
-          }
-          <hr/>
-          <TextField name="title" label="Title" form={submission}>
-          </TextField>
-          <div className="Field">
-            <div className="Field_Label">
-              Description
-            </div>
-            <div className="Field_Note">
-              <strong>NOTE</strong> please replace anything personally-identifiable in your talk submission with a
-              string like COMPANY_A, PROJECT_B, PERSON_C, or OTHER_D.
-            </div>
-            <SanitisingDescription name="description" label="Description" form={submission}/>
           </div>
-          <RadioButton name="newness" label="Newness of talk" options={newnessOptions} form={submission}/>
-          <TextField name="gender" label="Gender" form={submission}>
-            Feel free to put "Prefer not to say".
-          </TextField>
-          <RadioButton name="location" label="Location" options={locationOptions} form={submission}/>
-          <RadioButton name="techExperience" label="Tech industry experience" options={techExperienceOptions} form={submission}/>
-          <RadioButton name="speakingExperience" label="Speaking experience" options={speakingExperienceOptions} form={submission}/>
-          <RadioButton name="flights" label="Can your company pay for flights" options={["Yes","No"]} form={submission}/>
-          <TextField name="twitter" label="Twitter Handle" form={submission}/>
-          <TextField name="photo" label="Photo Url" form={submission}/>
-          <TextField name="email" label="Email Address" form={submission}/>
-          { submission.example ? null :
-            <div className="Form_Buttons">
-              <div className="Intro">Once you're happy with your submission, send it to us!</div>
-              <button type="submit" className="Button">Submit</button>
+          :
+          <form onSubmit={this.onSubmit.bind(this)} className={"Form" + (inProgress ? ' -in-progress' : '')}>
+            <h1 className="Header">
+              {conference.title} call for proposals
+            </h1>
+            { submission.example
+              ? <p className="Intro">This is an example proposal that was accepted in a previous year.</p>
+              :
+              <p className="Intro">
+                This year we're doing things a little differently, you should have
+                a <a href={conference.url} className="Link">read about why</a>.
+              </p>
+            }
+            <hr/>
+            <TextField name="title" label="Title" form={submission}>
+            </TextField>
+            <div className="Field">
+              <div className="Field_Label">
+                Description
+              </div>
+              <div className="Field_Note">
+                <strong>NOTE</strong> please replace anything personally-identifiable in your talk submission with a
+                string like COMPANY_A, PROJECT_B, PERSON_C, or OTHER_D.
+              </div>
+              <SanitisingDescription name="description" label="Description" form={submission}/>
             </div>
-          }
-        </form>
+            <RadioButton name="newness" label="Newness of talk" options={newnessOptions} form={submission}/>
+            <TextField name="gender" label="Gender" form={submission}>
+              Feel free to put "Prefer not to say".
+            </TextField>
+            <RadioButton name="location" label="Location" options={locationOptions} form={submission}/>
+            <RadioButton name="techExperience" label="Tech industry experience" options={techExperienceOptions}
+                         form={submission}/>
+            <RadioButton name="speakingExperience" label="Speaking experience" options={speakingExperienceOptions}
+                         form={submission}/>
+            <RadioButton name="flights" label="Can your company pay for flights" options={["Yes","No"]}
+                         form={submission}/>
+            <TextField name="twitter" label="Twitter Handle" form={submission}/>
+            <TextField name="photo" label="Photo Url" form={submission}/>
+            <TextField name="email" label="Email Address" form={submission}/>
+            { submission.example ? null :
+              <div className="Form_Buttons">
+                <div className="Intro">Once you're happy with your submission, send it to us!</div>
+                <button type="submit" className="Button">Submit</button>
+              </div>
+            }
+          </form>
+        }
       </main>
     );
   }
