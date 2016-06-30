@@ -3,7 +3,7 @@ import React from 'react'
 import App from './components/App'
 import './style/style'
 
-const conf = window.location.hostname.match(/css/) ? {
+const conference = window.location.hostname.match(/css/) ? {
   id: 'css',
   title: 'CSSConf AU 2016',
   url: 'http://2016.cssconf.com.au'
@@ -14,6 +14,6 @@ const conf = window.location.hostname.match(/css/) ? {
 }
 
 ReactDOM.render(
-  <App conference={conf}/>,
+  <App conference={conference}/>,
   document.getElementById('app')
 )

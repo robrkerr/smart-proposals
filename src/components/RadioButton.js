@@ -4,7 +4,7 @@ export default class TextArea extends Component {
   handleUpdate(e) {
     if (!this.props.form.example) {
       this.props.form.data[this.props.name] = e.target.value
-      this.forceUpdate()  
+      this.forceUpdate()
     }
   }
 
@@ -24,7 +24,7 @@ export default class TextArea extends Component {
       			onClick: this.handleUpdate.bind(this),
       			checked: (value == selectedValue) ? "checked" : undefined
       		};
-      		return <div key={i}><label><input type="radio" {...props} />{text}</label></div>
+      		return <div key={i}><label><input required type="radio" {...props} />{text}</label></div>
       	})
       }
     </div>

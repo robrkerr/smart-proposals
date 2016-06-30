@@ -9,7 +9,7 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.handleUpdateTitle = this.handleUpdateTitle.bind(this);
-    this.state = { submission: new Submission() };
+    this.state = { submission: new Submission(props.conference), inProgress: false };
   }
 
   handleUpdateTitle(event) {
@@ -121,15 +121,9 @@ export default class App extends Component {
             <SanitisingDescription name="description" label="Description" form={submission}/>
           </div>
           <RadioButton name="newness" label="Newness of talk" options={newnessOptions} form={submission}/>
-          <div className="Field">
-            <div className="Field_Label">
-              Gender
-            </div>
-            <div className="Field_Note">
-              Feel free to put "Prefer not to say".
-            </div>
-            <TextField name="gender" form={submission}/>
-          </div>
+          <TextField name="gender" label="Gender" form={submission}>
+            Feel free to put "Prefer not to say".
+          </TextField>
           <RadioButton name="location" label="Location" options={locationOptions} form={submission}/>
           <RadioButton name="techExperience" label="Tech industry experience" options={techExperienceOptions} form={submission}/>
           <RadioButton name="speakingExperience" label="Speaking experience" options={speakingExperienceOptions} form={submission}/>
