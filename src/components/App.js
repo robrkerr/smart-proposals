@@ -16,8 +16,8 @@ export default class App extends Component {
   }
 
   onSubmit(e) {
-    console.log(this.state.submission.toJson())
     e.preventDefault()
+    this.state.submission.submit().then(response => console.log(response))
   }
 
   render() {
