@@ -18,7 +18,7 @@ export default class App extends Component {
     this.setState({ inProgress: true })
     this.state.submission.submit()
       .then(response => this.setState({
-        submitted: `${window.location.href}?${response.sekret}`
+        submitted: `${window.location.origin}/?${response.sekret}`
       }))
   }
 
@@ -82,7 +82,7 @@ export default class App extends Component {
             { submission.example ? null :
               <div className="Form_Buttons">
                 <div className="Intro">Once you're happy with your submission, send it to us!</div>
-                <button type="submit" className="Button">Submit</button>
+                <button type="submit" className="Button">{submission.sekret ? 'Save' : 'Submit' }</button>
               </div>
             }
           </form>
