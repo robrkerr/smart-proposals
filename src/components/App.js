@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 import Submission from '../models/Submission'
 import SanitisingDescription from './SanitisingDescription'
@@ -8,11 +8,11 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.handleUpdateTitle = this.handleUpdateTitle.bind(this);
-    this.state = {submission: new Submission()};
+    this.state = { submission: new Submission() };
   }
 
   handleUpdateTitle(event) {
-    this.setState({title: event.target.value});
+    this.setState({ title: event.target.value });
   }
 
   onSubmit(e) {
@@ -24,24 +24,34 @@ export default class App extends Component {
     const { submission } = this.state;
     const { conference } = this.props;
     return (
-      <form onSubmit={this.onSubmit.bind(this)} className="Form">
-        <h1 className="Header">
-          {conference.title} call for proposals
-        </h1>
-        We're doing things a little differently, you should have a <a href=""></a>read about why.
-        <hr/>
-        <TextField name="title" label="Title" form={submission}/>
-        <div className="Field">
-        <div className="Field_Label">
-          Description
-        </div>
-        <div className="Field_Note">
-          Please self-sanitise these when referring to things such as companies, projects and people with generic identifiers, such as COMPANY_A. Stick to the following prefixes: COMPANY, PROJECT, PERSON and OTHER.
-        </div>
-        <SanitisingDescription name="description" label="Description" form={submission}/>
-        </div>
-        <button type="submit" className="Button">Submit</button>
-      </form>
+      <main className={conference.id}>
+        <form onSubmit={this.onSubmit.bind(this)} className="Form">
+          <h1 className="Header">
+            {conference.title} call for proposals
+          </h1>
+          <p className="Intro">
+            This year we're doing things a little differently, you should have
+            a <a href={conference.url} className="Link">read about why</a>.
+          </p>
+          <hr/>
+          <TextField name="title" label="Title" form={submission}>
+
+          </TextField>
+          <div className="Field -readonly">
+            <div className="Field_Label">
+              Description
+            </div>
+            <div className="Field_Note">
+              <strong>NOTE</strong> please replace anything personally-identifiable in your talk submission with a string like COMPANY_A, PROJECT_B, PERSON_C, or OTHER_D.
+            </div>
+            <SanitisingDescription name="description" label="Description" form={submission}/>
+          </div>
+          <div className="Form_Buttons">
+            <div className="Intro">Once you're happy with your submission, send it to us!</div>
+          <button type="submit" className="Button">Submit</button>
+          </div>
+        </form>
+      </main>
     );
   }
 }

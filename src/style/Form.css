@@ -1,0 +1,29 @@
+.Form {
+  background: hsl(0,0%,99%);
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100%;
+  border-radius: 0.25rem;
+}
+.Form.-in-progress > * {
+  opacity: 0.2;
+  transition: opacity ease-out 2s;
+  pointer-events: none;
+}
+
+.Header {
+  font-size: 2rem;
+  font-weight: 500;
+  padding-bottom: 2rem;
+}
+.Intro {
+  line-height: 1.4;
+}
+.Form_Buttons {
+  padding-top: 2rem;
+}
+.Form_Buttons > *+* {
+  margin-top: 1rem;
+}

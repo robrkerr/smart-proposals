@@ -1,0 +1,26 @@
+.Field {
+  padding: 1rem 0
+}
+.Field > *+* {
+  margin-top: 1rem;
+}
+
+.Field_Label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.Field_Note {
+  font-size: 1rem;
+  color: hsl(0,0%,40%);
+  line-height: 1.4;
+}
+
+.Field_Text {
+  font-family: inherit;
+  font-size: 1em;
+  line-height: 1.6em;
+  padding: 0.1em 0.3em;
+  width: 100%;
+  margin: 1rem 0 0;
+}
