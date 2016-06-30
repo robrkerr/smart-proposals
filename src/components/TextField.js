@@ -1,24 +1,18 @@
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import {Editor, ContentState} from 'draft-js'
+import React, {Component} from 'react'
 
-export default class TextField extends Component {
-
-  constructor(props) {
-    super(props);
-    this.handleUpdate = (editorState) => props.onUpdate(editorState,props.index);
+export default class TextArea extends Component {
+  handleUpdate(e) {
+    console.log(e)
+    this.props.form.data[this.props.name] = e.target.value
+    this.forceUpdate()
   }
 
   render() {
-    const { label, state, indentiers } = this.props;
-    return (
-      <div className="description-container">
-        <div className="description-field">
-          <Editor editorState={state} onChange={this.handleUpdate} />
-        </div>
-      </div>
-    );
+    const { name, label, form } = this.props
+    const value = form.data[name]
+    return <div>
+      <div className="field-label">{ label }</div>
+      <input type='text' className="field-text" value={value} onChange={this.handleUpdate.bind(this)}/>
+    </div>
   }
-
 }
-

@@ -3,6 +3,7 @@ var path = require('path');
 var fs = require('fs');
 
 module.exports = {
+  devtool: 'cheap-module-eval-source-map',
   entry: {
     main: './src/index.js'
   },

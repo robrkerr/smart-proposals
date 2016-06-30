@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import TextField from './TextField'
+import TextArea from './TextArea'
 import Identifier from './Identifier'
 import {CompositeDecorator, EditorState, ContentState} from 'draft-js'
 import parser from '../utils/parser'
@@ -170,7 +170,7 @@ export default class SanitisingDescription extends Component {
     const { handleUpdateField, handleUpdateIdentifierContext, handleUpdateIdentifierRedacted, handleUpdateIdentifierName } = this;
     return (
       <div>
-        <TextField index={0} {...fields[0]} state={fieldStates[0]} onUpdate={handleUpdateField}></TextField>
+        <TextArea index={0} {...fields[0]} state={fieldStates[0]} onUpdate={handleUpdateField}></TextArea>
         {
           identifiers.map((identifier,i) => 
             <Identifier key={i} index={i} {...identifier} details={identifierDetails[identifier.full]} onUpdateContext={handleUpdateIdentifierContext} onUpdateName={handleUpdateIdentifierName} onUpdateRedacted={handleUpdateIdentifierRedacted}></Identifier>    
