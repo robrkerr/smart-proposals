@@ -9,7 +9,7 @@ const emptyData = {
   }
 }
 
-const api = window.location.hostname.match(/localhost/) ? 'http://localhost:3000' : 'https://vsconf-cfp'
+const api = window.location.hostname.match(/localhost/) ? 'http://localhost:3000' : 'https://vsconf-cfp.herokuapp.com'
 const exampleName = window.location.href.split('?')[1]
 
 export default class Submission {
