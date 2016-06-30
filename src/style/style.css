@@ -1,4 +1,4 @@
-.main-container {
+.Form {
   background: hsl(0,0%,99%);
   width: 100%;
   max-width: 720px;
@@ -7,16 +7,28 @@
   min-height: 100%;
 }
 
-.field-label {
-  font-size: 1rem;
-  padding: 1rem 0 0;
+.Header {
+  font-size: 2rem;
+  font-weight: 500;
+  padding-bottom: 2rem;
 }
 
-.field-note {
-  padding: 0.5rem 0;
+.Field {
+  padding: 1rem 0
+}
+.Field > *+* {
+  margin-top: 1rem;
+}
+
+.Field_Label {
   font-size: 1rem;
-  font-size: 0.9em;
+  font-weight: 500;
+}
+
+.Field_Note {
+  font-size: 1rem;
   color: hsl(0,0%,40%);
+  line-height: 1.4;
 }
 
 .field-text {
@@ -28,18 +40,17 @@
   margin: 1rem 0 0;
 }
 
-.description-container {
-  padding: 1rem 0 0;
+.Description_Container {
 }
 
-.description-field {
+.Description_Field {
   width: 100%;
   background-color: white;
   line-height: 1.6em;
   border: solid 1px lightgray;
 }
 
-.description-field .public-DraftEditor-content {
+.Description_Field .public-DraftEditor-content {
   padding: 3px 8px;
   min-height: 10rem;
 }
