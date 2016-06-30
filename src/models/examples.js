@@ -13,6 +13,15 @@ export default {
 	      PROJECT_A: 'lol.js',
 	      PERSON_A: 'Smithy'
 	    }
-	  }
+	  },
+	  newness: "Yes",
+	  gender: "Not saying",
+	  location: "Central & South America",
+	  techExperience: "Mid level",
+	  speakingExperience: "A little",
+	  flights: "Yes",
+	  twitter: "@lol",
+	  photo: 'http://me.exposed/yolo.jpg',
+	  email: 'boom@lols.com'
 	}
 };

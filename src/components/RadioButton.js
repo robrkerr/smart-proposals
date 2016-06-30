@@ -17,7 +17,6 @@ export default class TextArea extends Component {
       	options.map((option,i) => {
       		const value = option.value || option;
       		const text = option.text || option;
-      		console.log(text);
       		const props = {
       			name: label,
       			value: value,
