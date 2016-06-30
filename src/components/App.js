@@ -22,17 +22,25 @@ export default class App extends Component {
 
   render() {
     const { submission } = this.state;
+    const { conference } = this.props;
     return (
-      <form onSubmit={this.onSubmit.bind(this)} className="main-container">
+      <form onSubmit={this.onSubmit.bind(this)} className="Form">
+        <h1 className="Header">
+          {conference.title} call for proposals
+        </h1>
+        We're doing things a little differently, you should have a <a href=""></a>read about why.
+        <hr/>
         <TextField name="title" label="Title" form={submission}/>
-        <div className="field-label">
+        <div className="Field">
+        <div className="Field_Label">
           Description
         </div>
-        <div className="field-note">
+        <div className="Field_Note">
           Please self-sanitise these when referring to things such as companies, projects and people with generic identifiers, such as COMPANY_A. Stick to the following prefixes: COMPANY, PROJECT, PERSON and OTHER.
         </div>
         <SanitisingDescription name="description" label="Description" form={submission}/>
-        <button type="submit">Go</button>
+        </div>
+        <button type="submit" className="Button">Submit</button>
       </form>
     );
   }

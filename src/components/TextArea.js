@@ -6,8 +6,8 @@ export default class TextArea extends Component {
   render() {
     const handleUpdate = (editorState) => this.props.onUpdate(editorState);
     return (
-      <div className="description-container">
-        <div className="description-field">
+      <div className="Description_Container">
+        <div className="Description_Field">
           <Editor editorState={this.props.state} onChange={handleUpdate} />
         </div>
       </div>
