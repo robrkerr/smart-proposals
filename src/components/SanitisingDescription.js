@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import TextField from './TextField'
 import Identifier from './Identifier'
 import {CompositeDecorator, EditorState, ContentState} from 'draft-js'
-import parser from './parser'
-import utils from './utils'
+import parser from '../utils/parser'
+import utils from '../utils/utils'
 
 const contentBlockDelimiter = '\n';
 const identifierPrefixes = ['COMPANY','PROJECT','PERSON','OTHER'];
