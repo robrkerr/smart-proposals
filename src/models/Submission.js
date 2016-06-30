@@ -5,12 +5,17 @@ export default class Submission {
     this.data = {
       title: '',
       description: '',
-      redactions: [],
-
     }
   }
 
   submit() {
-    return fetch(`${api}/submissions`, {method: 'POST', body: this.data}).then(r => r.json())
+    return fetch(`${api}/proposals`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({proposal: {title: this.data.title, submission: this.data}})
+    }).then(r => r.json())
   }
 }
