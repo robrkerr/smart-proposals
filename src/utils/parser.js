@@ -17,11 +17,22 @@ function extractIdentifiers(text,prefixes) {
     remainingText = remainingText.slice(match.index + match[0].length);
     match = re.exec(remainingText);
   }
-  return identifiers;
+  return getUniqueIdentifiers(identifiers);
 }
 
 function replaceIdentifiers(text,currId,newId) {
   return text.replace(new RegExp("\\b" + currId + "\\b","g"), newId);
+}
+
+function getUniqueIdentifiers(identifiers) {
+  return utils.group(identifiers, x => x.full).map(x => ({
+    full: x.name, 
+    type: x.items[0].type,
+    name: x.items[0].name,
+    startPositions: x.items.map(x => x.positionStart),
+    endPositions: x.items.map(x => x.positionEnd),
+    count: x.items.length
+  }));
 }
 
 export default {

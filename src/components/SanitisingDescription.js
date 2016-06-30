@@ -34,16 +34,30 @@ export default class SanitisingDescription extends Component {
     this.handleUpdateIdentifierContext = this.handleUpdateIdentifierContext.bind(this);
     this.handleUpdateIdentifierRedacted = this.handleUpdateIdentifierRedacted.bind(this);
     this.handleUpdateIdentifierName = this.handleUpdateIdentifierName.bind(this);
-    this.state = { 
-      identifiers: [],
-      identifierDetails: {},
-      fieldState: EditorState.createEmpty()
-    };
-    props.form.data[props.name] = { 
-      text: '',
-      context: {},
-      redactions: {}
-    };
+    if (props.form.data[props.name].text) {
+      const { text, redactions, context } = props.form.data[props.name];
+      const identifiers = parser.extractIdentifiers(text, identifierPrefixes);
+      let identifierDetails = {};
+      identifiers.map(identifier => {
+        identifierDetails[identifier.full] = {
+          context: context[identifier.full],
+          redacted: redactions[identifier.full]
+        };
+      });
+      const contentState = ContentState.createFromText(text,contentBlockDelimiter);
+      const editorState = EditorState.createWithContent(contentState);
+      this.state = { 
+        identifiers: identifiers,
+        identifierDetails: identifierDetails,
+        fieldState: updateDecorations(editorState,identifiers)
+      };
+    } else {
+      this.state = { 
+        identifiers: [],
+        identifierDetails: {},
+        fieldState: EditorState.createEmpty()
+      };
+    }
     this.setFormText = (myProps,text) => {
       myProps.form.data[myProps.name].text = text;
     }
