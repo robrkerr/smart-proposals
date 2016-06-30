@@ -20,26 +20,11 @@ function extractIdentifiers(text,prefixes) {
   return identifiers;
 }
 
-function replaceIdentifiers(texts,currId,newId) {
-  return texts.map(text => {
-    return text.replace(new RegExp("\\b" + currId + "\\b","g"), newId);
-  });
-}
-
-function collectIdentifiers(identifiersBySection) {
-  const flattenIdentifiers = [].concat.apply([], identifiersBySection);
-  return utils.group(flattenIdentifiers, x => x.full).map(x => ({
-    full: x.name, 
-    type: x.items[0].type,
-    name: x.items[0].name,
-    startPositions: x.items.map(x => x.positionStart),
-    endPositions: x.items.map(x => x.positionEnd),
-    count: x.items.length
-  }));
+function replaceIdentifiers(text,currId,newId) {
+  return text.replace(new RegExp("\\b" + currId + "\\b","g"), newId);
 }
 
 export default {
   extractIdentifiers: extractIdentifiers,
-  replaceIdentifiers: replaceIdentifiers,
-  collectIdentifiers: collectIdentifiers
+  replaceIdentifiers: replaceIdentifiers
 };
