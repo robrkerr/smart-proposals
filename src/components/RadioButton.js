@@ -9,19 +9,22 @@ export default class TextArea extends Component {
   }
 
   render() {
-    const { name, label, values, form } = this.props
+    const { name, label, options, form } = this.props
     const selectedValue = form.data[name]
     return <div className="Field">
       <div className="Field_Label">{ label }</div>
       {
-      	values.map((value,i) => {
+      	options.map((option,i) => {
+      		const value = option.value || option;
+      		const text = option.text || option;
+      		console.log(text);
       		const props = {
       			name: label,
       			value: value,
       			onClick: this.handleUpdate.bind(this),
       			checked: (value == selectedValue) ? "checked" : undefined
       		};
-      		return <div key={i}><label><input type="radio" {...props} />{value}</label></div>
+      		return <div key={i}><label><input type="radio" {...props} />{text}</label></div>
       	})
       }
     </div>
