@@ -41,11 +41,20 @@ export default class SanitisingDescription extends Component {
     };
     props.form.data[props.name] = { 
       text: '',
-      details: {}
+      context: {},
+      redactions: {}
     };
-    this.getMyField = (myProps) => myProps.form.data[myProps.name];
-    this.setMyField = (myProps,value) => {
-      myProps.form.data[myProps.name] = {...myProps.form.data[myProps.name],...value};
+    this.setFormText = (myProps,text) => {
+      myProps.form.data[myProps.name].text = text;
+    }
+    this.setFormDetails = (myProps,details,identifiers) => {
+      let context = {}; let redactions = {};
+      identifiers.map(identifier => {
+        context[identifier.full] = (details[identifier.full] || {}).context || '';
+        redactions[identifier.full] = (details[identifier.full] || {}).redacted || '';
+      })
+      myProps.form.data[myProps.name].context = context;
+      myProps.form.data[myProps.name].redactions = redactions;
     }
   }
 
@@ -73,13 +82,14 @@ export default class SanitisingDescription extends Component {
         identifierDetails: newIdentifierDetails,
         fieldState: newFieldState
       });
-      this.setMyField(this.props, {text: text, details: newIdentifierDetails});
+      this.setFormText(this.props, text);
+      this.setFormDetails(this.props, newIdentifierDetails, newIdentifiers);
       requestAnimationFrame(() => {
         this.setState({fieldState: updateDecorations(newFieldState,newIdentifiers)});
       });
     } else {
       this.setState({fieldState: newFieldState});
-      this.setMyField(this.props, {text: text});
+      this.setFormText(this.props, text);
     }
   }
 
@@ -94,7 +104,7 @@ export default class SanitisingDescription extends Component {
     let newIdentifierDetails = {...this.state.identifierDetails};
     newIdentifierDetails[newIdentifier] = this.state.identifierDetails[currIdentifier];
     this.setState({identifierDetails: newIdentifierDetails});
-    this.setMyField(this.props, {details: newIdentifierDetails});
+
   }
 
   handleUpdateIdentifierContext(text,identifierIndex) {
@@ -104,7 +114,7 @@ export default class SanitisingDescription extends Component {
       context: text
     };
     this.setState({identifierDetails: newIdentifierDetails});
-    this.setMyField(this.props, {details: newIdentifierDetails});
+    this.setFormDetails(this.props, newIdentifierDetails, this.state.identifiers);
   }
 
   handleUpdateIdentifierRedacted(text,identifierIndex) {
@@ -114,7 +124,7 @@ export default class SanitisingDescription extends Component {
       redacted: text
     };
     this.setState({identifierDetails: newIdentifierDetails});
-    this.setMyField(this.props, {details: newIdentifierDetails});
+    this.setFormDetails(this.props, newIdentifierDetails, this.state.identifiers);
   }
   
   render() {
