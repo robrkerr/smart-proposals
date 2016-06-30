@@ -31,7 +31,7 @@ export default class App extends Component {
         <div className="field-note">
           Please self-sanitise these when referring to things such as companies, projects and people with generic identifiers, such as COMPANY_A. Stick to the following prefixes: COMPANY, PROJECT, PERSON and OTHER.
         </div>
-        <SanitisingDescription/>
+        <SanitisingDescription name="description" label="Description" form={submission}/>
         <button type="submit">Go</button>
       </form>
     );

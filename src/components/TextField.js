@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 
 export default class TextArea extends Component {
   handleUpdate(e) {
-    console.log(e)
     this.props.form.data[this.props.name] = e.target.value
     this.forceUpdate()
   }

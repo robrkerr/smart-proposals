@@ -13,25 +13,6 @@ let fields = [{
   lines: 5
 }];
 
-let initialDetails = {};
-
-const url = window.location.href;
-if (url.split('?')[1] == 'test') {
-  fields[0]['text'] = 'As part of my work for COMPANY_A, I am developing PROJECT_A and we are doing some amazing things with Threejs. Building on what PERSON_A built, we show that it is possible to...';
-  initialDetails['COMPANY_A'] = {
-    context: 'Recent startup that will only be familar to a few people.',
-    redacted: 'Uber'
-  };
-  initialDetails['PROJECT_A'] = {
-    context: 'New project that would not have been spoken about in a conference talk.',
-    redacted: 'Uber Eats'
-  };
-  initialDetails['PERSON_A']  = {
-    context: 'Well known and respected Javascript developer.',
-    redacted: 'Smithy'
-  };
-}
-
 function updateDecorations(editorState,identifiers) {
   const newCompositeDecorator = new CompositeDecorator(identifiers.map((identifier,i) => {
     const re = new RegExp("\\b" + identifier.full + "\\b");
@@ -53,37 +34,30 @@ export default class SanitisingDescription extends Component {
     this.handleUpdateIdentifierContext = this.handleUpdateIdentifierContext.bind(this);
     this.handleUpdateIdentifierRedacted = this.handleUpdateIdentifierRedacted.bind(this);
     this.handleUpdateIdentifierName = this.handleUpdateIdentifierName.bind(this);
-    const initialFieldStates = fields.map(field => {
-      if (field.text) {
-        const contentState = ContentState.createFromText(field.text,contentBlockDelimiter);
-        return EditorState.createWithContent(contentState);
-
-      } else {
-        return EditorState.createEmpty();
-      }
-    });
-    this.state = { 
+    const { name, form } = props;
+    form.data[name] = { 
       identifiersBySection: fields.map(field => []),
       identifiers: [],
-      identifierDetails: initialDetails,
-      fieldStates: initialFieldStates
+      identifierDetails: {},
+      fieldStates: fields.map(field => EditorState.createEmpty())
     };
-  }
-
-  componentWillMount() {
-    this.handleUpdateAllFields(this.state.fieldStates);
+    this.getMyState = (myProps) => myProps.form.data[myProps.name];
+    this.setMyState = (myProps,value) => {
+      myProps.form.data[myProps.name] = {...myProps.form.data[myProps.name],...value};
+      this.forceUpdate();
+    }
   }
 
   handleUpdateField(newFieldState,fieldIndex) {
     const text = newFieldState.getCurrentContent().getPlainText(contentBlockDelimiter);
     const sectionIdentifiers = parser.extractIdentifiers(text, identifierPrefixes);
-    const { identifiersBySection, fieldTexts } = this.state;
+    const { identifiersBySection, fieldTexts } = this.getMyState(this.props);
     const newIdentifiersBySection = identifiersBySection.map((identifiers,i) => (
       (i == fieldIndex) ? sectionIdentifiers : identifiers
     ));
     const newIdentifiers = parser.collectIdentifiers(newIdentifiersBySection);
-    const oldIdentifiers = this.state.identifiers;
-    let newIdentifierDetails = {...this.state.identifierDetails};
+    const oldIdentifiers = this.getMyState(this.props).identifiers;
+    let newIdentifierDetails = {...this.getMyState(this.props).identifierDetails};
     if (newIdentifiers.length == oldIdentifiers.length) {
       for (let i = 0; i < newIdentifiers.length; i++) {
         if (newIdentifiers[i].full != oldIdentifiers[i].full) {
@@ -99,17 +73,20 @@ export default class SanitisingDescription extends Component {
         }
       }
     }
-    const newFieldStates = this.state.fieldStates.map((state,i) => (
+    const newFieldStates = this.getMyState(this.props).fieldStates.map((state,i) => (
       (i == fieldIndex) ? newFieldState : state
     ));
-    this.setState({
+    this.setMyState(this.props, {
       identifiersBySection: newIdentifiersBySection,
       identifiers: newIdentifiers,
       identifierDetails: newIdentifierDetails,
       fieldStates: newFieldStates
     });
     requestAnimationFrame(() => {
-      this.setState({
+      this.setMyState(this.props, {
+        identifiersBySection: newIdentifiersBySection,
+        identifiers: newIdentifiers,
+        identifierDetails: newIdentifierDetails,
         fieldStates: newFieldStates.map(state => updateDecorations(state,newIdentifiers))
       });
     });
@@ -123,7 +100,7 @@ export default class SanitisingDescription extends Component {
       return parser.extractIdentifiers(text, identifierPrefixes);
     });
     const newIdentifiers = parser.collectIdentifiers(newIdentifiersBySection);
-    this.setState({
+    this.setMyState(this.props, {
       identifiersBySection: newIdentifiersBySection,
       identifiers: newIdentifiers,
       fieldStates: newFieldStates.map(state => updateDecorations(state,newIdentifiers))
@@ -131,7 +108,7 @@ export default class SanitisingDescription extends Component {
   }
 
   handleUpdateIdentifierName(text,identifierIndex) {
-    const { identifiers, fieldStates } = this.state;
+    const { identifiers, fieldStates } = this.getMyState(this.props);
     const currIdentifier = identifiers[identifierIndex].full;
     const newIdentifier = identifiers[identifierIndex].type + '_' + text;
     const fieldTexts = fieldStates.map(state => (
@@ -142,31 +119,37 @@ export default class SanitisingDescription extends Component {
       return EditorState.createWithContent(ContentState.createFromText(text, contentBlockDelimiter));
     });
     this.handleUpdateAllFields(newFieldStates);
-    let newIdentifierDetails = {...this.state.identifierDetails};
-    newIdentifierDetails[newIdentifier] = this.state.identifierDetails[currIdentifier];
-    this.setState({
+    let newIdentifierDetails = {...this.getMyState(this.props).identifierDetails};
+    newIdentifierDetails[newIdentifier] = this.getMyState(this.props).identifierDetails[currIdentifier];
+    this.setMyState(this.props, {
       identifierDetails: newIdentifierDetails
     });
   }
 
   handleUpdateIdentifierContext(text,identifierIndex) {
-    let newIdentifierDetails = {...this.state.identifierDetails};
-    newIdentifierDetails[this.state.identifiers[identifierIndex].full].context = text;
-    this.setState({
+    let newIdentifierDetails = {...this.getMyState(this.props).identifierDetails};
+    const identifier = this.getMyState(this.props).identifiers[identifierIndex].full;
+    newIdentifierDetails[identifier] = {...newIdentifierDetails[identifier], 
+      context: text
+    };
+    this.setMyState(this.props, {
       identifierDetails: newIdentifierDetails
     });
   }
 
   handleUpdateIdentifierRedacted(text,identifierIndex) {
-    let newIdentifierDetails = {...this.state.identifierDetails};
-    newIdentifierDetails[this.state.identifiers[identifierIndex].full].redacted = text;
-    this.setState({
+    let newIdentifierDetails = {...this.getMyState(this.props).identifierDetails};
+    const identifier = this.getMyState(this.props).identifiers[identifierIndex].full;
+    newIdentifierDetails[identifier] = {...newIdentifierDetails[identifier], 
+      redacted: text
+    };
+    this.setMyState(this.props, {
       identifierDetails: newIdentifierDetails
     });
   }
   
   render() {
-    const { identifiers, identifierDetails, fieldStates } = this.state;
+    const { identifiers, identifierDetails, fieldStates } = this.getMyState(this.props);
     const { handleUpdateField, handleUpdateIdentifierContext, handleUpdateIdentifierRedacted, handleUpdateIdentifierName } = this;
     return (
       <div>
