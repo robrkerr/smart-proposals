@@ -32,6 +32,21 @@ module.exports = {
   plugins: [
     new webpack.ProvidePlugin({
       'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-    })
+    }),
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        // This has effect on the react lib size
+        'NODE_ENV': JSON.stringify('production'),
+      },
+    }),
+    new webpack.optimize.DedupePlugin()
+    // ,
+    // new webpack.optimize.UglifyJsPlugin({
+    //   minimize: true,
+    //   compressor: {
+    //     warnings: false
+    //   }
+    // })
   ]
 };
