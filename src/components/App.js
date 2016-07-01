@@ -81,7 +81,7 @@ export default class App extends Component {
             <TextField name="email" label="Email Address" form={submission}/>
             { submission.example ? null :
               <div className="Form_Buttons">
-                <div className="Intro">Once you're happy with your submission, send it to us!</div>
+                <div className="Intro"><p>Once you're happy with your submission, send it to us. You will receive a link to access your proposals afterwards.</p></div>
                 <button type="submit" className="Button">{submission.inProgress ? 'Saving...' : submission.sekret ? 'Save' : 'Submit' }</button>
               </div>
             }
