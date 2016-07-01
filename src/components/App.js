@@ -50,7 +50,7 @@ export default class App extends Component {
               :
               <p className="Intro">
                 This year we're doing things a little differently, you should have
-                a <a target="_blank" href={blogPostUrl} className="Link">read about why</a>.
+                a <a target="_blank" href={blogPostUrl} className="Link">read about why</a>. <strong>Submissions are open until July 31st.</strong>
               </p>
             }
             <hr/>
@@ -58,11 +58,13 @@ export default class App extends Component {
             </TextField>
             <div className="Field">
               <div className="Field_Label">
-                Description
+                Talk Description
               </div>
               <div className="Field_Note">
                 <strong>NOTE</strong> please replace anything personally-identifiable in your talk submission with a
-                string like COMPANY_A, PROJECT_B, PERSON_C, or OTHER_D. Confused about why? See the
+                string like COMPANY_A, PROJECT_B, PERSON_C, or OTHER_D.
+                <br/>
+                Confused about why? See the
                 a <a target="_blank" href={blogPostUrl + "#anonymised-description-field"} className="Link">relevant section</a> of
                 the CFP blog post.
               </div>
@@ -79,8 +81,7 @@ export default class App extends Component {
                          form={submission}/>
             <RadioButton name="flights" label="Can your company pay for flights" options={["Yes","No"]}
                          form={submission}/>
-            <TextField name="twitter" label="Twitter Handle" form={submission}/>
-            <TextField name="photo" label="Photo Url" form={submission}/>
+            <TextField name="twitter" label="Twitter Handle or Website" form={submission}/>
             <TextField type="email" name="email" label="Email Address" form={submission}/>
             { submission.example ? null :
               <div className="Form_Buttons">

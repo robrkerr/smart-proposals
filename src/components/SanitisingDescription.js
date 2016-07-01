@@ -46,13 +46,13 @@ export default class SanitisingDescription extends Component {
       });
       const contentState = ContentState.createFromText(text,contentBlockDelimiter);
       const editorState = EditorState.createWithContent(contentState);
-      this.state = { 
+      this.state = {
         identifiers: identifiers,
         identifierDetails: identifierDetails,
         fieldState: updateDecorations(editorState,identifiers)
       };
     } else {
-      this.state = { 
+      this.state = {
         identifiers: [],
         identifierDetails: {},
         fieldState: EditorState.createEmpty()
@@ -85,12 +85,12 @@ export default class SanitisingDescription extends Component {
             if (newIdentifiers[i].type == oldIdentifiers[i].type) {
               const text = newIdentifierDetails[oldIdentifiers[i].full];
               if (!newIdentifierDetails[newIdentifiers[i].full]) {
-                newIdentifierDetails[newIdentifiers[i].full] = text;  
+                newIdentifierDetails[newIdentifiers[i].full] = text;
               }
             }
           }
         }
-      }  
+      }
       this.setState({
         identifiers: newIdentifiers,
         identifierDetails: newIdentifierDetails,
@@ -124,7 +124,7 @@ export default class SanitisingDescription extends Component {
   handleUpdateIdentifierContext(text,identifierIndex) {
     let newIdentifierDetails = {...this.state.identifierDetails};
     const identifier = this.state.identifiers[identifierIndex].full;
-    newIdentifierDetails[identifier] = {...newIdentifierDetails[identifier], 
+    newIdentifierDetails[identifier] = {...newIdentifierDetails[identifier],
       context: text
     };
     this.setState({identifierDetails: newIdentifierDetails});
@@ -134,13 +134,13 @@ export default class SanitisingDescription extends Component {
   handleUpdateIdentifierRedacted(text,identifierIndex) {
     let newIdentifierDetails = {...this.state.identifierDetails};
     const identifier = this.state.identifiers[identifierIndex].full;
-    newIdentifierDetails[identifier] = {...newIdentifierDetails[identifier], 
+    newIdentifierDetails[identifier] = {...newIdentifierDetails[identifier],
       redacted: text
     };
     this.setState({identifierDetails: newIdentifierDetails});
     this.setFormDetails(this.props, newIdentifierDetails, this.state.identifiers);
   }
-  
+
   render() {
     const { identifiers, identifierDetails, fieldState } = this.state;
     const { example } = this.props.form;
@@ -149,8 +149,8 @@ export default class SanitisingDescription extends Component {
       <div>
         <TextArea state={fieldState} readonly={example} onUpdate={handleUpdateField}></TextArea>
         {
-          identifiers.map((identifier,i) => 
-            <Identifier readonly={example} key={i} index={i} {...identifier} details={identifierDetails[identifier.full]} onUpdateContext={handleUpdateIdentifierContext} onUpdateName={handleUpdateIdentifierName} onUpdateRedacted={handleUpdateIdentifierRedacted}></Identifier>    
+          identifiers.map((identifier,i) =>
+            <Identifier readonly={example} key={i} index={i} {...identifier} details={identifierDetails[identifier.full]} onUpdateContext={handleUpdateIdentifierContext} onUpdateName={handleUpdateIdentifierName} onUpdateRedacted={handleUpdateIdentifierRedacted}></Identifier>
           )
         }
       </div>

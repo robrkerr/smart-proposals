@@ -9,7 +9,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 main {
@@ -23,4 +23,8 @@ main.css {
 
 main.js {
   background: hsl(233, 71%, 40%);
+}
+
+strong {
+  font-weight: bold;
 }

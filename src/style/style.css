@@ -8,6 +8,11 @@
   border: solid 1px lightgray;
 }
 
+.Description_Identifiers {
+  font-size: 0.9em;
+  padding-top: 1rem;
+}
+
 .Description_Field .public-DraftEditor-content {
   padding: 3px 8px;
   min-height: 10rem;
@@ -15,14 +20,20 @@
 
 .identifier-container {
   padding: 1rem 0;
+  margin-top: 0.5rem;
+}
+.identifier-container + .identifier-container {
+  border-top: 1px solid rgba(0,0,0,0.2);
 }
 
-.identifier-container > *:not(:first-child) {
-  margin-top: 0.8rem;
+.identifier-label {
+  font-size: 0.9em;
+  margin: 1rem 0 0.5rem;
 }
 
 .identifier-row {
   display: flex;
+  align-items: center;
 }
 
 .identifier-row > *:not(:first-child) {
