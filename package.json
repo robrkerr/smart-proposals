@@ -4,7 +4,7 @@
     "test": "webpack",
     "start": "NODE_ENV=development webpack-dev-server --content-base public/ --hot --inline",
     "clean": "rm -f public/bundle.js",
-    "build": "npm run clean && webpack -p --progress"
+    "build": "npm run clean && NODE_ENV=production webpack -p --progress"
   },
   "author": "Robert Kerr",
   "devDependencies": {

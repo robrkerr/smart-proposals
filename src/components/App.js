@@ -26,6 +26,7 @@ export default class App extends Component {
     const { submission, inProgress, submitted } = this.state
     const { conference } = this.props
     const { newnessOptions, locationOptions, techExperienceOptions, speakingExperienceOptions } = FormData(conference)
+    const blogPostUrl = '/2016/07/01/cfp.html'
 
     return (
       <main className={conference.id}>
@@ -49,7 +50,7 @@ export default class App extends Component {
               :
               <p className="Intro">
                 This year we're doing things a little differently, you should have
-                a <a href={conference.url} className="Link">read about why</a>.
+                a <a target="_blank" href={blogPostUrl} className="Link">read about why</a>.
               </p>
             }
             <hr/>
@@ -61,7 +62,9 @@ export default class App extends Component {
               </div>
               <div className="Field_Note">
                 <strong>NOTE</strong> please replace anything personally-identifiable in your talk submission with a
-                string like COMPANY_A, PROJECT_B, PERSON_C, or OTHER_D.
+                string like COMPANY_A, PROJECT_B, PERSON_C, or OTHER_D. Confused about why? See the
+                a <a target="_blank" href={blogPostUrl + "#anonymised-description-field"} className="Link">relevant section</a> of
+                the CFP blog post.
               </div>
               <SanitisingDescription name="description" label="Description" form={submission}/>
             </div>
