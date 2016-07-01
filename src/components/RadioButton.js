@@ -23,7 +23,7 @@ export default class TextArea extends Component {
       			onClick: this.handleUpdate.bind(this),
       			checked: (value == selectedValue) ? "checked" : undefined
       		};
-      		return <div key={i}><label><input required type="radio" {...props} />{text}</label></div>
+      		return <div key={i}><label><input required type="radio" {...props} /><span>{text}</span></label></div>
       	})
       }
     </div>

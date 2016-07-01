@@ -1,10 +1,24 @@
 .Button {
-  font-size: 0.9rem;
-  padding: 0.65em 1em 0.62em;
+  font-size: 1rem;
+  padding: 1rem;
   background: none;
-  border: 1px solid;
-  border-radius: 0.25rem;
-  min-width: 9em;
+  border: 2px solid;
+  min-width: 10rem;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+.Button:hover {
+  color: #000;
+  border-color: #000;
+}
+
+main.css .Button {
+  color: hsl(12, 86%, 48%);
+  border-color: hsl(12, 86%, 48%);
+}
+
+main.js .Button {
+  color: hsl(233, 71%, 40%);
+  border-color: hsl(233, 71%, 40%);
 }

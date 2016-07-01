@@ -1,3 +1,18 @@
 .Link {
+  text-decoration: none;
+}
 
+main.js .Link {
+  color: hsl(233, 71%, 40%);
+  border-bottom: 2px solid hsl(233, 71%, 40%);
+}
+
+main.js .Link:hover,
+main.css .Link:hover {
+  border: 0;
+}
+
+main.css .Link {
+  color: hsl(12, 86%, 48%);
+  border-bottom: 2px solid hsl(12, 86%, 48%);
 }

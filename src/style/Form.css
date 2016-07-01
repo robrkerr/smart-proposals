@@ -2,7 +2,7 @@
   background: hsl(0,0%,99%);
   width: 100%;
   max-width: 720px;
-  margin: 0 auto;
+  margin: 2rem auto;
   padding: 2rem;
   min-height: 100%;
   border-radius: 0.25rem;
@@ -22,11 +22,28 @@
   padding-bottom: 2rem;
 }
 .Intro {
-  line-height: 1.4;
+  line-height: 1.5;
 }
 .Form_Buttons {
-  padding-top: 2rem;
+  padding-top: 1rem;
 }
 .Form_Buttons > *+* {
   margin-top: 1rem;
+}
+input[type=radio] {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  margin-top: -7px;
+}
+
+label {
+  display: block;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+label span {
+  display: inline-block;
+  line-height: 1.25;
 }
