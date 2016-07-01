@@ -18,7 +18,7 @@ export default class App extends Component {
     this.setState({ inProgress: true })
     this.state.submission.submit()
       .then(response => this.setState({
-        submitted: `${window.location.origin}/?${response.sekret}`
+        submitted: `${window.location.href.replace(/\?\w+$/,'')}?${response.sekret}`
       }))
   }
 
@@ -78,7 +78,7 @@ export default class App extends Component {
                          form={submission}/>
             <TextField name="twitter" label="Twitter Handle" form={submission}/>
             <TextField name="photo" label="Photo Url" form={submission}/>
-            <TextField name="email" label="Email Address" form={submission}/>
+            <TextField type="email" name="email" label="Email Address" form={submission}/>
             { submission.example ? null :
               <div className="Form_Buttons">
                 <div className="Intro"><p>Once you're happy with your submission, send it to us. You will receive a link to access your proposals afterwards.</p></div>
