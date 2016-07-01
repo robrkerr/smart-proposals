@@ -2,8 +2,10 @@ var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
 
+var DEV_MODE = process.env.NODE_ENV === 'development';
+
 module.exports = {
-  devtool: 'cheap-module-eval-source-map',
+  devtool: DEV_MODE ? 'cheap-module-eval-source-map' : undefined,
   entry: {
     main: './src/index.js'
   },

@@ -2,9 +2,9 @@
   "name": "self-sanitising-proposal",
   "scripts": {
     "test": "webpack",
-    "start": "webpack-dev-server --content-base public/ --hot --inline",
+    "start": "NODE_ENV=development webpack-dev-server --content-base public/ --hot --inline",
     "clean": "rm -f public/bundle.js",
-    "build": "npm run clean && webpack"
+    "build": "npm run clean && webpack -p --progress"
   },
   "author": "Robert Kerr",
   "devDependencies": {
