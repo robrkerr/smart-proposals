@@ -4,6 +4,28 @@ var fs = require('fs');
 
 var DEV_MODE = process.env.NODE_ENV === 'development';
 
+var plugins = [
+    new webpack.ProvidePlugin({
+      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+    }),
+];
+
+if (!DEV_MODE) {
+  plugins = plugins.concat([
+      new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.UglifyJsPlugin({
+        minimize: true,
+        compressor: {
+          warnings: false,
+        },
+      }),
+      new webpack.DefinePlugin({
+          'process.env.NODE_ENV': JSON.stringify('production'),
+      }),
+  ]);
+}
+
+
 module.exports = {
   devtool: DEV_MODE ? 'cheap-module-eval-source-map' : undefined,
   entry: {
@@ -29,9 +51,5 @@ module.exports = {
     modulesDirectories: ['node_modules']
   },
 
-  plugins: [
-    new webpack.ProvidePlugin({
-      'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
-    })
-  ]
+  plugins: plugins,
 };
