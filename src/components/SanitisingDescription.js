@@ -111,8 +111,7 @@ export default class SanitisingDescription extends Component {
     const { identifiers, fieldState } = this.state;
     const currIdentifier = identifiers[identifierIndex].full;
     const newIdentifier = identifiers[identifierIndex].type + '_' + text;
-contentBlockDelimiter
-    const fieldText = fieldState.getCurrentContent().getPlainText()
+    const fieldText = fieldState.getCurrentContent().getPlainText(contentBlockDelimiter);
     const newFieldText = parser.replaceIdentifiers(fieldText, currIdentifier, newIdentifier);
     const newFieldState = EditorState.createWithContent(ContentState.createFromText(newFieldText, contentBlockDelimiter));
     this.handleUpdateField(newFieldState);

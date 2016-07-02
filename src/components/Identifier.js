@@ -5,7 +5,7 @@ export default class Identifier extends Component {
 
 	handleUpdateContext(event) {
     if (!this.props.readonly) {
-      this.props.onUpdateContext(event.target.value,this.props.index);  
+      this.props.onUpdateContext(event.target.value,this.props.index);
     }
   }
 
@@ -33,10 +33,14 @@ export default class Identifier extends Component {
         <div className="identifier-row">
         	<div className={"identifier-type underline underline-" + (index % 6)}>{type}</div>
         	<input type='text' className="identifier-name" value={name} onChange={handleUpdateName} />
-          <input type='text' className="identifier-redacted" value={redacted} placeholder='Actual Name...' onChange={handleUpdateRedacted} />
         </div>
+        <div className="identifier-label">The real value (hidden from reviewers)</div>
         <div className="identifier-row">
-          <input type='text' className="identifier-description" value={context} placeholder='Context...' onChange={handleUpdateContext} />
+          <input type='text' required className="identifier-redacted" value={redacted} placeholder='Actual Name...' onChange={handleUpdateRedacted} />
+        </div>
+        <div className="identifier-label">A definition the reviewers will see</div>
+        <div className="identifier-row">
+          <input type='text' required className="identifier-description" value={context} placeholder='Context...' onChange={handleUpdateContext} />
         </div>
       </div>
     );
