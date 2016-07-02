@@ -16,7 +16,7 @@ export default {
 	  },
 	  newness: "Yes",
 	  gender: "Not saying",
-	  location: "Central & South America",
+	  location: "Central and South America",
 	  techExperience: "Mid level",
 	  speakingExperience: "A little",
 	  flights: "Yes",
