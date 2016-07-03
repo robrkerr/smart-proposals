@@ -70,7 +70,7 @@ export default class App extends Component {
               </div>
               <SanitisingDescription name="description" label="Description" form={submission}/>
             </div>
-            <RadioButton name="newness" label="Newness of talk" options={newnessOptions} form={submission}/>
+            <RadioButton name="newness" label="Have you given this talk before?" options={newnessOptions} form={submission}/>
             <TextField name="gender" label="Gender" form={submission}>
               Feel free to put "Prefer not to say".
             </TextField>
