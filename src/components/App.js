@@ -81,8 +81,10 @@ export default class App extends Component {
                          form={submission}/>
             <RadioButton name="flights" label="Can your company pay for flights" options={["Yes","No"]}
                          form={submission}/>
-            <TextField name="twitter" label="Twitter Handle or Website" form={submission}/>
+            <TextField type="text" name="name" label="Your Name" form={submission}/>
+            <TextField name="twitter" label="Twitter Handle or Website" form={submission} required={false}/>
             <TextField type="email" name="email" label="Email Address" form={submission}/>
+            <TextField type="text" name="anythingElse" label="Anything else you need to tell us?" form={submission} required={false}/>
             { submission.example ? null :
               <div className="Form_Buttons">
                 <div className="Intro"><p>Once you're happy with your submission, send it to us. You will receive a link to access your proposals afterwards.</p></div>
